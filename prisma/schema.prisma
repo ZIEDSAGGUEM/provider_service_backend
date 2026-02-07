@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BUSY
+  UNAVAILABLE
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  avatar        String?
+  phone         String?
+  location      String?
+  role          UserRole
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  provider      Provider?
+  requests      ServiceRequest[]  @relation("ClientRequests")
+  reviews       Review[]
+  favorites     Favorite[]
+  sentMessages  Message[]        @relation("SentMessages")
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model Provider {
+  id                String              @id @default(uuid())
+  userId            String              @unique
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  categoryId        String
+  category          Category            @relation(fields: [categoryId], references: [id])
+  
+  bio               String?
+  hourlyRate        Float
+  skills            String[]
+  availability      AvailabilityStatus  @default(AVAILABLE)
+  verified          Boolean             @default(false)
+  yearsExperience   Int                 @default(0)
+  completedJobs     Int                 @default(0)
+  responseTime      String              @default("< 2 hours")
+  rating            Float               @default(0)
+  reviewCount       Int                 @default(0)
+  
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Relations
+  requests          ServiceRequest[]
+  reviews           Review[]
+  favorites         Favorite[]
+
+  @@map("providers")
+}
+
+model Category {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  icon          String
+  description   String
+  providerCount Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  providers     Provider[]
+  requests      ServiceRequest[]
+
+  @@map("categories")
+}
+
+model ServiceRequest {
+  id          String        @id @default(uuid())
+  
+  clientId    String
+  client      User          @relation("ClientRequests", fields: [clientId], references: [id], onDelete: Cascade)
+  
+  providerId  String
+  provider    Provider      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  
+  description String
+  date        DateTime
+  time        String
+  budget      Float?
+  status      RequestStatus @default(PENDING)
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // Relations
+  messages    Message[]
+
+  @@map("service_requests")
+}
+
+model Review {
+  id          String    @id @default(uuid())
+  
+  clientId    String
+  client      User      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  providerId  String
+  provider    Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  rating      Int
+  comment     String
+  serviceType String
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("reviews")
+}
+
+model Message {
+  id        String         @id @default(uuid())
+  
+  senderId  String
+  sender    User           @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  requestId String
+  request   ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
+  content   String
+  read      Boolean        @default(false)
+  
+  createdAt DateTime       @default(now())
+
+  @@map("messages")
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, providerId])
+  @@map("favorites")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
