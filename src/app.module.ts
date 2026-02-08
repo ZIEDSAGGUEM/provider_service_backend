@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaService } from './infrastructure/database/prisma.service';
-import { SupabaseService } from './infrastructure/services/supabase.service';
+import { AuthModule } from './application/modules/auth/auth.module';
+import { WebhooksModule } from './application/modules/webhooks/webhooks.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    AuthModule,
+    WebhooksModule,
   ],
-  providers: [PrismaService, SupabaseService],
-  exports: [PrismaService, SupabaseService],
 })
 export class AppModule {}

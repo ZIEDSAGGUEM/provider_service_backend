@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseService {
@@ -17,20 +17,29 @@ export class SupabaseService {
     return this.supabase;
   }
 
-  // Auth methods
-  async signUp(email: string, password: string) {
-    return this.supabase.auth.signUp({ email, password });
+  /**
+   * Validate JWT token and return Supabase user
+   */
+  async validateToken(token: string): Promise<User> {
+    const { data, error } = await this.supabase.auth.getUser(token);
+
+    if (error || !data.user) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    return data.user;
   }
 
-  async signIn(email: string, password: string) {
-    return this.supabase.auth.signInWithPassword({ email, password });
-  }
+  /**
+   * Get user by ID (admin operation)
+   */
+  async getUserById(userId: string): Promise<User> {
+    const { data, error } = await this.supabase.auth.admin.getUserById(userId);
 
-  async signOut(token: string) {
-    return this.supabase.auth.signOut();
-  }
+    if (error || !data.user) {
+      throw new UnauthorizedException('User not found in Supabase');
+    }
 
-  async getUser(token: string) {
-    return this.supabase.auth.getUser(token);
+    return data.user;
   }
 }
