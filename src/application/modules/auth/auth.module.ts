@@ -1,33 +1,43 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { SupabaseAuthGuard } from './guards/supabase-auth.guard';
-import { SupabaseService } from '../../../infrastructure/services/supabase.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { PrismaUserRepository } from '../../../infrastructure/database/repositories/prisma-user.repository';
+import { EmailService } from '../../../infrastructure/services/email.service';
 import { GetUserUseCase } from '../../../core/use-cases/auth/get-user.usecase';
-import { SyncUserUseCase } from '../../../core/use-cases/auth/sync-user.usecase';
+
+const IUserRepository = 'IUserRepository';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: '7d',
+        },
+      }),
+    }),
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    SupabaseService,
+    JwtStrategy,
     PrismaService,
-    PrismaUserRepository,
-    SupabaseAuthGuard,
-    // Repository
+    EmailService,
     {
-      provide: 'IUserRepository',
+      provide: IUserRepository,
       useClass: PrismaUserRepository,
     },
-    // Use Cases
     GetUserUseCase,
-    SyncUserUseCase,
   ],
-  exports: [AuthService, SupabaseAuthGuard, GetUserUseCase],
+  exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
-

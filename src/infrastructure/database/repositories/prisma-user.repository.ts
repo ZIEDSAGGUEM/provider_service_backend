@@ -15,12 +15,17 @@ export class PrismaUserRepository implements IUserRepository {
     return new UserEntity({
       id: user.id,
       email: user.email,
+      password: user.password,
       name: user.name,
       avatar: user.avatar,
       phone: user.phone,
       location: user.location,
       role: user.role as UserRole,
       verified: user.verified,
+      verificationToken: user.verificationToken,
+      verificationTokenExpiry: user.verificationTokenExpiry,
+      passwordResetToken: user.passwordResetToken,
+      passwordResetTokenExpiry: user.passwordResetTokenExpiry,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });
@@ -44,14 +49,35 @@ export class PrismaUserRepository implements IUserRepository {
     return user ? this.mapToEntity(user) : null;
   }
 
+  async findByVerificationToken(token: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { verificationToken: token },
+      include: { provider: true },
+    });
+
+    return user ? this.mapToEntity(user) : null;
+  }
+
+  async findByPasswordResetToken(token: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { passwordResetToken: token },
+      include: { provider: true },
+    });
+
+    return user ? this.mapToEntity(user) : null;
+  }
+
   async create(data: CreateUserDto): Promise<UserEntity> {
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
+        password: data.password,
         name: data.name,
         role: data.role,
         avatar: data.avatar,
-        verified: data.verified,
+        verified: data.verified ?? false,
+        verificationToken: data.verificationToken,
+        verificationTokenExpiry: data.verificationTokenExpiry,
       },
       include: { provider: true },
     });
@@ -73,4 +99,3 @@ export class PrismaUserRepository implements IUserRepository {
     await this.prisma.user.delete({ where: { id } });
   }
 }
-
