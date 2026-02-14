@@ -18,6 +18,12 @@ enum AvailabilityStatus {
   UNAVAILABLE
 }
 
+enum ProviderStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
 enum RequestStatus {
   PENDING
   ACCEPTED
@@ -54,31 +60,36 @@ model User {
 }
 
 model Provider {
-  id                String              @id @default(uuid())
-  userId            String              @unique
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String              @id @default(uuid())
+  userId              String              @unique
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  categoryId        String
-  category          Category            @relation(fields: [categoryId], references: [id])
+  categoryId          String
+  category            Category            @relation(fields: [categoryId], references: [id])
   
-  bio               String?
-  hourlyRate        Float
-  skills            String[]
-  availability      AvailabilityStatus  @default(AVAILABLE)
-  verified          Boolean             @default(false)
-  yearsExperience   Int                 @default(0)
-  completedJobs     Int                 @default(0)
-  responseTime      String              @default("< 2 hours")
-  rating            Float               @default(0)
-  reviewCount       Int                 @default(0)
+  bio                 String?
+  hourlyRate          Float
+  skills              String[]
+  availability        AvailabilityStatus  @default(AVAILABLE)
+  availabilitySchedule Json?              // Weekly schedule: { "monday": ["9:00-17:00"], "tuesday": [...] }
+  verified            Boolean             @default(false)
+  yearsExperience     Int                 @default(0)
+  completedJobs       Int                 @default(0)
+  responseTime        String              @default("< 2 hours")
+  rating              Float               @default(0)
+  reviewCount         Int                 @default(0)
+  serviceRadius       Int                 @default(10) // km
+  portfolio           String[]            // Array of image URLs
+  certifications      String[]            // Array of certification names/URLs
+  status              ProviderStatus      @default(ACTIVE)
   
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
   
   // Relations
-  requests          ServiceRequest[]
-  reviews           Review[]
-  favorites         Favorite[]
+  requests            ServiceRequest[]
+  reviews             Review[]
+  favorites           Favorite[]
 
   @@map("providers")
 }
