@@ -122,11 +122,24 @@ model ServiceRequest {
   categoryId  String
   category    Category      @relation(fields: [categoryId], references: [id])
   
+  // Request details
+  title       String
   description String
-  date        DateTime
-  time        String
-  budget      Float?
-  status      RequestStatus @default(PENDING)
+  location    String?       // Service location (defaults to user location)
+  
+  // Scheduling
+  preferredDate   DateTime
+  preferredTime   String    // e.g., "9:00 AM", "Afternoon"
+  scheduledDate   DateTime? // Actual confirmed date (set when accepted)
+  
+  // Financials
+  estimatedBudget Float?    // Client's budget estimate
+  finalPrice      Float?    // Final agreed price (set when completed)
+  
+  // Status tracking
+  status          RequestStatus @default(PENDING)
+  cancelledBy     String?       // "CLIENT" or "PROVIDER"
+  cancelReason    String?
   
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
