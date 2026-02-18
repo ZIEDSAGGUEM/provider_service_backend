@@ -4,6 +4,7 @@ import { AuthModule } from './application/modules/auth/auth.module';
 import { ProvidersModule } from './application/modules/providers/providers.module';
 import { CategoriesModule } from './application/modules/categories/categories.module';
 import { ServiceRequestsModule } from './application/modules/service-requests/service-requests.module';
+import { ReviewsModule } from './application/modules/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ServiceRequestsModule } from './application/modules/service-requests/se
     ProvidersModule,
     CategoriesModule,
     ServiceRequestsModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}

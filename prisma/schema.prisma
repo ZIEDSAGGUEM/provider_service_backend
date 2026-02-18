@@ -141,11 +141,17 @@ model ServiceRequest {
   cancelledBy     String?       // "CLIENT" or "PROVIDER"
   cancelReason    String?
   
+  // Lifecycle timestamps
+  startedAt       DateTime?     // When provider started the job
+  completedAt     DateTime?     // When provider completed the job
+  completionNotes String?       // Provider's completion notes
+  
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   
   // Relations
   messages    Message[]
+  review      Review?
 
   @@map("service_requests")
 }
@@ -153,15 +159,17 @@ model ServiceRequest {
 model Review {
   id          String    @id @default(uuid())
   
+  requestId   String    @unique
+  request     ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  
   clientId    String
   client      User      @relation(fields: [clientId], references: [id], onDelete: Cascade)
   
   providerId  String
   provider    Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
   
-  rating      Int
+  rating      Int       // 1-5 stars
   comment     String
-  serviceType String
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

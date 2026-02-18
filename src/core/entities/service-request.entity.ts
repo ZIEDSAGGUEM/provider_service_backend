@@ -27,6 +27,11 @@ export class ServiceRequestEntity {
   cancelledBy?: string | null;
   cancelReason?: string | null;
   
+  // Lifecycle timestamps
+  startedAt?: Date | null;
+  completedAt?: Date | null;
+  completionNotes?: string | null;
+  
   createdAt: Date;
   updatedAt: Date;
   

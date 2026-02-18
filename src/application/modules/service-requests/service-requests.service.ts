@@ -6,8 +6,11 @@ import { ListProviderRequestsUseCase } from '../../../core/use-cases/service-req
 import { CancelServiceRequestUseCase } from '../../../core/use-cases/service-request/cancel-service-request.usecase';
 import { AcceptServiceRequestUseCase } from '../../../core/use-cases/service-request/accept-service-request.usecase';
 import { DeclineServiceRequestUseCase } from '../../../core/use-cases/service-request/decline-service-request.usecase';
+import { StartServiceRequestUseCase } from '../../../core/use-cases/service-request/start-service-request.usecase';
+import { CompleteServiceRequestUseCase } from '../../../core/use-cases/service-request/complete-service-request.usecase';
 import { ServiceRequestEntity, RequestStatus } from '../../../core/entities/service-request.entity';
 import { CreateServiceRequestDto } from './dto/create-service-request.dto';
+import { CompleteServiceRequestDto } from './dto/complete-service-request.dto';
 
 @Injectable()
 export class ServiceRequestsService {
@@ -19,6 +22,8 @@ export class ServiceRequestsService {
     private readonly cancelServiceRequestUseCase: CancelServiceRequestUseCase,
     private readonly acceptServiceRequestUseCase: AcceptServiceRequestUseCase,
     private readonly declineServiceRequestUseCase: DeclineServiceRequestUseCase,
+    private readonly startServiceRequestUseCase: StartServiceRequestUseCase,
+    private readonly completeServiceRequestUseCase: CompleteServiceRequestUseCase,
   ) {}
 
   async createRequest(userId: string, dto: CreateServiceRequestDto): Promise<ServiceRequestEntity> {
@@ -58,6 +63,17 @@ export class ServiceRequestsService {
 
   async declineRequest(requestId: string, userId: string, reason?: string): Promise<ServiceRequestEntity> {
     return this.declineServiceRequestUseCase.execute(requestId, userId, reason);
+  }
+
+  async startRequest(requestId: string, userId: string): Promise<ServiceRequestEntity> {
+    return this.startServiceRequestUseCase.execute(requestId, userId);
+  }
+
+  async completeRequest(requestId: string, userId: string, dto: CompleteServiceRequestDto): Promise<ServiceRequestEntity> {
+    return this.completeServiceRequestUseCase.execute(requestId, userId, {
+      completionNotes: dto.completionNotes,
+      finalPrice: dto.finalPrice,
+    });
   }
 }
 

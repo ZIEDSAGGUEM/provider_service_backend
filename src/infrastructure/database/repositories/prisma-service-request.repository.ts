@@ -29,6 +29,9 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
       status: request.status as RequestStatus,
       cancelledBy: request.cancelledBy,
       cancelReason: request.cancelReason,
+      startedAt: request.startedAt,
+      completedAt: request.completedAt,
+      completionNotes: request.completionNotes,
       createdAt: request.createdAt,
       updatedAt: request.updatedAt,
       client: request.client ? {
@@ -158,21 +161,26 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
   }
 
   async update(id: string, data: UpdateServiceRequestDto): Promise<ServiceRequestEntity> {
+    // Build update data dynamically to only include defined fields
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.location !== undefined) updateData.location = data.location;
+    if (data.preferredDate !== undefined) updateData.preferredDate = data.preferredDate;
+    if (data.preferredTime !== undefined) updateData.preferredTime = data.preferredTime;
+    if (data.estimatedBudget !== undefined) updateData.estimatedBudget = data.estimatedBudget;
+    if (data.scheduledDate !== undefined) updateData.scheduledDate = data.scheduledDate;
+    if (data.finalPrice !== undefined) updateData.finalPrice = data.finalPrice;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.cancelledBy !== undefined) updateData.cancelledBy = data.cancelledBy;
+    if (data.cancelReason !== undefined) updateData.cancelReason = data.cancelReason;
+    if (data.startedAt !== undefined) updateData.startedAt = data.startedAt;
+    if (data.completedAt !== undefined) updateData.completedAt = data.completedAt;
+    if (data.completionNotes !== undefined) updateData.completionNotes = data.completionNotes;
+
     const request = await this.prisma.serviceRequest.update({
       where: { id },
-      data: {
-        title: data.title,
-        description: data.description,
-        location: data.location,
-        preferredDate: data.preferredDate,
-        preferredTime: data.preferredTime,
-        estimatedBudget: data.estimatedBudget,
-        scheduledDate: data.scheduledDate,
-        finalPrice: data.finalPrice,
-        status: data.status,
-        cancelledBy: data.cancelledBy,
-        cancelReason: data.cancelReason,
-      },
+      data: updateData,
       include: {
         client: true,
         provider: {

@@ -14,6 +14,8 @@ import { ListProviderRequestsUseCase } from '../../../core/use-cases/service-req
 import { CancelServiceRequestUseCase } from '../../../core/use-cases/service-request/cancel-service-request.usecase';
 import { AcceptServiceRequestUseCase } from '../../../core/use-cases/service-request/accept-service-request.usecase';
 import { DeclineServiceRequestUseCase } from '../../../core/use-cases/service-request/decline-service-request.usecase';
+import { StartServiceRequestUseCase } from '../../../core/use-cases/service-request/start-service-request.usecase';
+import { CompleteServiceRequestUseCase } from '../../../core/use-cases/service-request/complete-service-request.usecase';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
@@ -45,6 +47,8 @@ import { AuthModule } from '../auth/auth.module';
     CancelServiceRequestUseCase,
     AcceptServiceRequestUseCase,
     DeclineServiceRequestUseCase,
+    StartServiceRequestUseCase,
+    CompleteServiceRequestUseCase,
   ],
   exports: [ServiceRequestsService],
 })

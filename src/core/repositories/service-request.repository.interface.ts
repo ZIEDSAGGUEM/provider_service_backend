@@ -24,6 +24,9 @@ export interface UpdateServiceRequestDto {
   status?: RequestStatus;
   cancelledBy?: string;
   cancelReason?: string;
+  startedAt?: Date | null;
+  completedAt?: Date | null;
+  completionNotes?: string | null;
 }
 
 export interface ServiceRequestFilters {

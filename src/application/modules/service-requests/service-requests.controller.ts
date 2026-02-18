@@ -15,6 +15,7 @@ import { ServiceRequestsService } from './service-requests.service';
 import { CreateServiceRequestDto } from './dto/create-service-request.dto';
 import { CancelServiceRequestDto } from './dto/cancel-service-request.dto';
 import { DeclineServiceRequestDto } from './dto/decline-service-request.dto';
+import { CompleteServiceRequestDto } from './dto/complete-service-request.dto';
 import { ServiceRequestResponseDto } from './dto/service-request-response.dto';
 import { JwtAuthGuard } from '../../../application/common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../application/common/guards/roles.guard';
@@ -111,6 +112,31 @@ export class ServiceRequestsController {
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Provider ${user.id} declining service request ${id}`);
     const request = await this.serviceRequestsService.declineRequest(id, user.id, dto.reason);
+    return new ServiceRequestResponseDto(request);
+  }
+
+  @Put(':id/start')
+  @Roles(UserRole.PROVIDER)
+  @HttpCode(HttpStatus.OK)
+  async startRequest(
+    @CurrentUser() user: UserEntity,
+    @Param('id') id: string,
+  ): Promise<ServiceRequestResponseDto> {
+    this.logger.log(`Provider ${user.id} starting service request ${id}`);
+    const request = await this.serviceRequestsService.startRequest(id, user.id);
+    return new ServiceRequestResponseDto(request);
+  }
+
+  @Put(':id/complete')
+  @Roles(UserRole.PROVIDER)
+  @HttpCode(HttpStatus.OK)
+  async completeRequest(
+    @CurrentUser() user: UserEntity,
+    @Param('id') id: string,
+    @Body() dto: CompleteServiceRequestDto,
+  ): Promise<ServiceRequestResponseDto> {
+    this.logger.log(`Provider ${user.id} completing service request ${id}`);
+    const request = await this.serviceRequestsService.completeRequest(id, user.id, dto);
     return new ServiceRequestResponseDto(request);
   }
 }
