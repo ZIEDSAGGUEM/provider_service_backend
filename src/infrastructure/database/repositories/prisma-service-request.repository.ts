@@ -149,7 +149,7 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
       },
     });
 
-    return requests.map(this.mapToEntity);
+    return requests.map((r) => this.mapToEntity(r));
   }
 
   async findByClient(clientId: string, filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]> {

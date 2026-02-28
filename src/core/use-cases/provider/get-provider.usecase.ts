@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
 import { ProviderEntity } from '../../entities/provider.entity';
 
@@ -11,11 +11,9 @@ export class GetProviderUseCase {
 
   async execute(id: string): Promise<ProviderEntity> {
     const provider = await this.providerRepository.findById(id);
-    
     if (!provider) {
-      throw new Error('Provider not found');
+      throw new NotFoundException('Provider not found');
     }
-
     return provider;
   }
 }

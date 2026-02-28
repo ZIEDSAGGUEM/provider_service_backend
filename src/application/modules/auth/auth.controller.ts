@@ -3,13 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserEntity } from '../../../core/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
@@ -22,99 +22,51 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(private readonly authService: AuthService) {}
 
-  /**
-   * Register a new user
-   * POST /api/auth/register
-   */
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto): Promise<{ message: string }> {
-    console.log('📝 Register request received:', { email: dto.email, name: dto.name, role: dto.role });
-    try {
-      const result = await this.authService.register(dto);
-      console.log('✅ Registration successful');
-      return result;
-    } catch (error) {
-      console.error('❌ Registration failed:', error.message);
-      throw error;
-    }
+    this.logger.log(`Register request: ${dto.email}`);
+    return this.authService.register(dto);
   }
 
-  /**
-   * Verify email with token
-   * POST /api/auth/verify-email
-   */
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Body() dto: VerifyEmailDto): Promise<{ message: string }> {
-    console.log('📧 Verify email request received:', { token: dto.token });
-    try {
-      const result = await this.authService.verifyEmail(dto.token);
-      console.log('✅ Email verification successful');
-      return result;
-    } catch (error) {
-      console.error('❌ Email verification failed:', error.message);
-      throw error;
-    }
+    return this.authService.verifyEmail(dto.token);
   }
 
-  /**
-   * Resend verification email
-   * POST /api/auth/resend-verification
-   */
   @Post('resend-verification')
   @HttpCode(HttpStatus.OK)
   async resendVerification(@Body() dto: ResendVerificationDto): Promise<{ message: string }> {
-    return await this.authService.resendVerificationEmail(dto.email);
+    return this.authService.resendVerificationEmail(dto.email);
   }
 
-  /**
-   * Login user
-   * POST /api/auth/login
-   */
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
-    console.log('🔐 Login request received:', { email: dto.email });
-    try {
-      const result = await this.authService.login(dto);
-      console.log('✅ Login successful:', result.user.id);
-      return result;
-    } catch (error) {
-      console.error('❌ Login failed:', error.message);
-      throw error;
-    }
+    this.logger.log(`Login request: ${dto.email}`);
+    return this.authService.login(dto);
   }
 
-  /**
-   * Get current user profile
-   * GET /api/auth/me
-   */
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getCurrentUser(@CurrentUser() user: UserEntity): Promise<UserEntity> {
     return user;
   }
 
-  /**
-   * Request password reset
-   * POST /api/auth/request-password-reset
-   */
   @Post('request-password-reset')
   @HttpCode(HttpStatus.OK)
   async requestPasswordReset(@Body() dto: RequestPasswordResetDto): Promise<{ message: string }> {
-    return await this.authService.requestPasswordReset(dto.email);
+    return this.authService.requestPasswordReset(dto.email);
   }
 
-  /**
-   * Reset password with token
-   * POST /api/auth/reset-password
-   */
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto): Promise<{ message: string }> {
-    return await this.authService.resetPassword(dto.token, dto.newPassword);
+    return this.authService.resetPassword(dto.token, dto.newPassword);
   }
 }

@@ -16,6 +16,9 @@ export class ServiceRequestResponseDto {
   status: RequestStatus;
   cancelledBy?: string | null;
   cancelReason?: string | null;
+  startedAt?: Date | null;
+  completedAt?: Date | null;
+  completionNotes?: string | null;
   createdAt: Date;
   updatedAt: Date;
   client?: any;
@@ -38,6 +41,9 @@ export class ServiceRequestResponseDto {
     this.status = entity.status;
     this.cancelledBy = entity.cancelledBy;
     this.cancelReason = entity.cancelReason;
+    this.startedAt = entity.startedAt;
+    this.completedAt = entity.completedAt;
+    this.completionNotes = entity.completionNotes;
     this.createdAt = entity.createdAt;
     this.updatedAt = entity.updatedAt;
     this.client = entity.client;
@@ -45,4 +51,3 @@ export class ServiceRequestResponseDto {
     this.category = entity.category;
   }
 }
-

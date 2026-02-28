@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../repositories/category.repository.interface';
 
@@ -13,21 +13,15 @@ export class DeleteProviderUseCase {
 
   async execute(id: string, userId: string): Promise<void> {
     const provider = await this.providerRepository.findById(id);
-    
     if (!provider) {
-      throw new Error('Provider not found');
+      throw new NotFoundException('Provider not found');
     }
 
-    // Ensure the provider belongs to the user
     if (provider.userId !== userId) {
-      throw new Error('Unauthorized: You can only delete your own provider profile');
+      throw new ForbiddenException('You can only delete your own provider profile');
     }
 
-    // Delete provider
     await this.providerRepository.delete(id);
-
-    // Decrement category provider count
     await this.categoryRepository.decrementProviderCount(provider.categoryId);
   }
 }
-

@@ -34,6 +34,11 @@ export class PrismaReviewRepository implements IReviewRepository {
         rating: data.rating,
         comment: data.comment,
       },
+      include: {
+        client: {
+          select: { id: true, name: true, avatar: true },
+        },
+      },
     });
 
     return this.mapToEntity(review);
@@ -42,6 +47,9 @@ export class PrismaReviewRepository implements IReviewRepository {
   async findById(id: string): Promise<ReviewEntity | null> {
     const review = await this.prisma.review.findUnique({
       where: { id },
+      include: {
+        client: { select: { id: true, name: true, avatar: true } },
+      },
     });
 
     return review ? this.mapToEntity(review) : null;
@@ -50,6 +58,9 @@ export class PrismaReviewRepository implements IReviewRepository {
   async findByRequestId(requestId: string): Promise<ReviewEntity | null> {
     const review = await this.prisma.review.findUnique({
       where: { requestId },
+      include: {
+        client: { select: { id: true, name: true, avatar: true } },
+      },
     });
 
     return review ? this.mapToEntity(review) : null;
@@ -79,7 +90,7 @@ export class PrismaReviewRepository implements IReviewRepository {
       },
     });
 
-    return reviews.map(this.mapToEntity);
+    return reviews.map((r) => this.mapToEntity(r));
   }
 
   async findByClientId(clientId: string): Promise<ReviewEntity[]> {
@@ -104,7 +115,7 @@ export class PrismaReviewRepository implements IReviewRepository {
       },
     });
 
-    return reviews.map(this.mapToEntity);
+    return reviews.map((r) => this.mapToEntity(r));
   }
 
   async calculateProviderRating(providerId: string): Promise<{ rating: number; count: number }> {

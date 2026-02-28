@@ -16,17 +16,16 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { UserRole } from '../../../core/entities/user.entity';
-import { UserEntity } from '../../../core/entities/user.entity';
+import { UserRole, UserEntity } from '../../../core/entities/user.entity';
 
 @Controller('reviews')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ReviewsController {
   private readonly logger = new Logger(ReviewsController.name);
 
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.CLIENT)
   @HttpCode(HttpStatus.CREATED)
   async createReview(
@@ -42,9 +41,7 @@ export class ReviewsController {
   async getProviderReviews(
     @Param('providerId') providerId: string,
   ): Promise<ReviewResponseDto[]> {
-    this.logger.log(`Fetching reviews for provider ${providerId}`);
     const reviews = await this.reviewsService.getProviderReviews(providerId);
     return reviews.map((review) => new ReviewResponseDto(review));
   }
 }
-

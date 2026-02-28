@@ -33,9 +33,10 @@ export class DeclineServiceRequestUseCase {
       throw new BadRequestException(`Cannot decline request with status: ${request.status}`);
     }
 
-    // Decline the request (set to CANCELLED status)
     return this.requestRepository.update(requestId, {
       status: RequestStatus.CANCELLED,
+      cancelledBy: 'PROVIDER',
+      cancelReason: reason,
     });
   }
 }
