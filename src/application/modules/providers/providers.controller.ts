@@ -48,6 +48,13 @@ export class ProvidersController {
     return this.providersService.getMyProvider(user.id);
   }
 
+  @Get('me/analytics')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.PROVIDER)
+  async getMyAnalytics(@CurrentUser() user: UserEntity) {
+    return this.providersService.getAnalytics(user.id);
+  }
+
   @Get()
   async searchProviders(@Query() dto: SearchProvidersDto): Promise<ProviderResponseDto[]> {
     return this.providersService.searchProviders(dto);
