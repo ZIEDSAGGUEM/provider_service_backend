@@ -17,29 +17,18 @@ import { DeclineServiceRequestUseCase } from '../../../core/use-cases/service-re
 import { StartServiceRequestUseCase } from '../../../core/use-cases/service-request/start-service-request.usecase';
 import { CompleteServiceRequestUseCase } from '../../../core/use-cases/service-request/complete-service-request.usecase';
 import { AuthModule } from '../auth/auth.module';
+import { EventsModule } from '../../gateways/events.module';
 
 @Module({
-  imports: [PassportModule, AuthModule],
+  imports: [PassportModule, AuthModule, EventsModule],
   controllers: [ServiceRequestsController],
   providers: [
     ServiceRequestsService,
     PrismaService,
-    {
-      provide: 'IServiceRequestRepository',
-      useClass: PrismaServiceRequestRepository,
-    },
-    {
-      provide: 'IUserRepository',
-      useClass: PrismaUserRepository,
-    },
-    {
-      provide: 'IProviderRepository',
-      useClass: PrismaProviderRepository,
-    },
-    {
-      provide: 'ICategoryRepository',
-      useClass: PrismaCategoryRepository,
-    },
+    { provide: 'IServiceRequestRepository', useClass: PrismaServiceRequestRepository },
+    { provide: 'IUserRepository', useClass: PrismaUserRepository },
+    { provide: 'IProviderRepository', useClass: PrismaProviderRepository },
+    { provide: 'ICategoryRepository', useClass: PrismaCategoryRepository },
     CreateServiceRequestUseCase,
     GetServiceRequestUseCase,
     ListClientRequestsUseCase,
@@ -53,4 +42,3 @@ import { AuthModule } from '../auth/auth.module';
   exports: [ServiceRequestsService],
 })
 export class ServiceRequestsModule {}
-

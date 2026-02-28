@@ -7,12 +7,13 @@ import { ServiceRequestsModule } from './application/modules/service-requests/se
 import { ReviewsModule } from './application/modules/reviews/reviews.module';
 import { MessagesModule } from './application/modules/messages/messages.module';
 import { AiModule } from './application/modules/ai/ai.module';
+import { FavoritesModule } from './application/modules/favorites/favorites.module';
+import { NotificationsModule } from './application/modules/notifications/notifications.module';
+import { EventsModule } from './application/gateways/events.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     ProvidersModule,
     CategoriesModule,
@@ -20,6 +21,9 @@ import { AiModule } from './application/modules/ai/ai.module';
     ReviewsModule,
     MessagesModule,
     AiModule,
+    FavoritesModule,
+    NotificationsModule,
+    EventsModule,
   ],
 })
 export class AppModule {}

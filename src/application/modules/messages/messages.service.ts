@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { SendMessageUseCase } from '../../../core/use-cases/message/send-message.usecase';
 import { GetConversationUseCase } from '../../../core/use-cases/message/get-conversation.usecase';
 import { GetConversationsUseCase } from '../../../core/use-cases/message/get-conversations.usecase';
 import { GetUnreadCountUseCase } from '../../../core/use-cases/message/get-unread-count.usecase';
 import { MessageEntity } from '../../../core/entities/message.entity';
 import type { ConversationSummary } from '../../../core/repositories/message.repository.interface';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class MessagesService {
@@ -13,20 +14,14 @@ export class MessagesService {
     private readonly getConversationUseCase: GetConversationUseCase,
     private readonly getConversationsUseCase: GetConversationsUseCase,
     private readonly getUnreadCountUseCase: GetUnreadCountUseCase,
+    @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
 
-  async sendMessage(
-    senderId: string,
-    requestId: string,
-    content: string,
-  ): Promise<MessageEntity> {
+  async sendMessage(senderId: string, requestId: string, content: string): Promise<MessageEntity> {
     return this.sendMessageUseCase.execute(senderId, requestId, content);
   }
 
-  async getConversation(
-    requestId: string,
-    userId: string,
-  ): Promise<MessageEntity[]> {
+  async getConversation(requestId: string, userId: string): Promise<MessageEntity[]> {
     return this.getConversationUseCase.execute(requestId, userId);
   }
 
@@ -38,4 +33,3 @@ export class MessagesService {
     return this.getUnreadCountUseCase.execute(userId);
   }
 }
-
