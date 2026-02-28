@@ -6,6 +6,7 @@ import { CategoriesModule } from './application/modules/categories/categories.mo
 import { ServiceRequestsModule } from './application/modules/service-requests/service-requests.module';
 import { ReviewsModule } from './application/modules/reviews/reviews.module';
 import { MessagesModule } from './application/modules/messages/messages.module';
+import { AiModule } from './application/modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MessagesModule } from './application/modules/messages/messages.module';
     ServiceRequestsModule,
     ReviewsModule,
     MessagesModule,
+    AiModule,
   ],
 })
 export class AppModule {}
