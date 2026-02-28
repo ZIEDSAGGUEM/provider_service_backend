@@ -53,6 +53,7 @@ export class ProvidersService {
 
   async searchProviders(dto: SearchProvidersDto): Promise<ProviderResponseDto[]> {
     const providers = await this.searchProvidersUseCase.execute({
+      q: dto.q,
       categoryId: dto.categoryId,
       minRating: dto.minRating,
       maxHourlyRate: dto.maxHourlyRate,

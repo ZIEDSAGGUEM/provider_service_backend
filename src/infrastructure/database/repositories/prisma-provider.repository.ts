@@ -101,14 +101,31 @@ export class PrismaProviderRepository implements IProviderRepository {
       if (filters.status) {
         where.status = filters.status as any;
       } else {
-        // Default: only show active providers
         where.status = 'ACTIVE';
       }
       if (filters.verified !== undefined) {
         where.verified = filters.verified;
       }
+
+      // Location filter: case-insensitive partial match on user.location
+      if (filters.location) {
+        where.user = {
+          ...where.user,
+          location: { contains: filters.location, mode: 'insensitive' },
+        };
+      }
+
+      // Text search: matches user name, bio, skills, or category name
+      if (filters.q) {
+        const q = filters.q;
+        where.OR = [
+          { user: { name: { contains: q, mode: 'insensitive' } } },
+          { bio: { contains: q, mode: 'insensitive' } },
+          { skills: { hasSome: [q] } },
+          { category: { name: { contains: q, mode: 'insensitive' } } },
+        ];
+      }
     } else {
-      // Default: only show active providers
       where.status = 'ACTIVE';
     }
 

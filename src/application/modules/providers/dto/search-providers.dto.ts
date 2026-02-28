@@ -5,6 +5,10 @@ import { AvailabilityStatus, ProviderStatus } from '../../../../core/entities/pr
 export class SearchProvidersDto {
   @IsOptional()
   @IsString()
+  q?: string;
+
+  @IsOptional()
+  @IsString()
   categoryId?: string;
 
   @IsOptional()

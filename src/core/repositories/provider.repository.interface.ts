@@ -31,6 +31,7 @@ export interface UpdateProviderDto {
 }
 
 export interface ProviderSearchFilters {
+  q?: string;
   categoryId?: string;
   minRating?: number;
   maxHourlyRate?: number;
