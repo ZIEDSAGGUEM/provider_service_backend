@@ -10,6 +10,7 @@ import { AiModule } from './application/modules/ai/ai.module';
 import { FavoritesModule } from './application/modules/favorites/favorites.module';
 import { NotificationsModule } from './application/modules/notifications/notifications.module';
 import { EventsModule } from './application/gateways/events.module';
+import { UploadsModule } from './application/modules/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { EventsModule } from './application/gateways/events.module';
     FavoritesModule,
     NotificationsModule,
     EventsModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}
