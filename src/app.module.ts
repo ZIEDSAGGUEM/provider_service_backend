@@ -11,6 +11,7 @@ import { FavoritesModule } from './application/modules/favorites/favorites.modul
 import { NotificationsModule } from './application/modules/notifications/notifications.module';
 import { EventsModule } from './application/gateways/events.module';
 import { UploadsModule } from './application/modules/uploads/uploads.module';
+import { AdminModule } from './application/modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UploadsModule } from './application/modules/uploads/uploads.module';
     NotificationsModule,
     EventsModule,
     UploadsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

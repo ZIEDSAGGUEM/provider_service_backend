@@ -37,7 +37,27 @@ async function main() {
   }
 
   // ──────────────────────────────────────
-  //  2. Seed Provider Users + Profiles
+  //  2. Seed Admin User
+  // ──────────────────────────────────────
+  const adminEmail = 'admin@localpro.com';
+  const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+  if (!existingAdmin) {
+    await prisma.user.create({
+      data: {
+        email: adminEmail,
+        password: await bcrypt.hash('Admin@123', 10),
+        name: 'Admin',
+        role: 'ADMIN',
+        verified: true,
+      },
+    });
+    console.log('  ✓ Admin user created (admin@localpro.com / Admin@123)');
+  } else {
+    console.log('  ⏭️  Admin user already exists');
+  }
+
+  // ──────────────────────────────────────
+  //  3. Seed Provider Users + Profiles
   // ──────────────────────────────────────
   const password = await bcrypt.hash('Provider@123', 10);
 

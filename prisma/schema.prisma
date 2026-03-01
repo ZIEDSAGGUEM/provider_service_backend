@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   CLIENT
   PROVIDER
+  ADMIN
 }
 
 enum AvailabilityStatus {
