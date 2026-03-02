@@ -12,6 +12,7 @@ import { NotificationsModule } from './application/modules/notifications/notific
 import { EventsModule } from './application/gateways/events.module';
 import { UploadsModule } from './application/modules/uploads/uploads.module';
 import { AdminModule } from './application/modules/admin/admin.module';
+import { DisputesModule } from './application/modules/disputes/disputes.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminModule } from './application/modules/admin/admin.module';
     EventsModule,
     UploadsModule,
     AdminModule,
+    DisputesModule,
   ],
 })
 export class AppModule {}

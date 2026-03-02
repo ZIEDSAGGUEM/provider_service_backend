@@ -57,6 +57,8 @@ model User {
   favorites     Favorite[]
   sentMessages  Message[]         @relation("SentMessages")
   notifications Notification[]
+  raisedDisputes   Dispute[]      @relation("RaisedDisputes")
+  resolvedDisputes Dispute[]      @relation("ResolvedDisputes")
 
   @@map("users")
 }
@@ -154,6 +156,7 @@ model ServiceRequest {
   // Relations
   messages    Message[]
   review      Review?
+  dispute     Dispute?
 
   @@map("service_requests")
 }
@@ -211,6 +214,18 @@ model Favorite {
   @@map("favorites")
 }
 
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+}
+
+enum DisputeResolution {
+  CLIENT_FAVORED
+  PROVIDER_FAVORED
+  COMPROMISE
+}
+
 enum NotificationType {
   REQUEST_NEW
   REQUEST_ACCEPTED
@@ -220,6 +235,9 @@ enum NotificationType {
   REQUEST_CANCELLED
   NEW_MESSAGE
   NEW_REVIEW
+  DISPUTE_OPENED
+  DISPUTE_RESPONSE
+  DISPUTE_RESOLVED
 }
 
 model Notification {
@@ -237,5 +255,33 @@ model Notification {
   createdAt DateTime         @default(now())
 
   @@map("notifications")
+}
+
+model Dispute {
+  id                String            @id @default(uuid())
+
+  requestId         String            @unique
+  request           ServiceRequest    @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  raisedById        String
+  raisedBy          User              @relation("RaisedDisputes", fields: [raisedById], references: [id], onDelete: Cascade)
+
+  reason            String
+  evidence          String[]
+
+  providerResponse  String?
+  providerEvidence  String[]
+
+  status            DisputeStatus     @default(OPEN)
+  resolution        DisputeResolution?
+  adminNote         String?
+
+  resolvedById      String?
+  resolvedBy        User?             @relation("ResolvedDisputes", fields: [resolvedById], references: [id])
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@map("disputes")
 }
 

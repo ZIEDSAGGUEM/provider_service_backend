@@ -6,7 +6,10 @@ export type NotificationType =
   | 'REQUEST_COMPLETED'
   | 'REQUEST_CANCELLED'
   | 'NEW_MESSAGE'
-  | 'NEW_REVIEW';
+  | 'NEW_REVIEW'
+  | 'DISPUTE_OPENED'
+  | 'DISPUTE_RESPONSE'
+  | 'DISPUTE_RESOLVED';
 
 export class NotificationEntity {
   id: string;
