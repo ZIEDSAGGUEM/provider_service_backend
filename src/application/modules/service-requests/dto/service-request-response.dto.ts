@@ -1,4 +1,7 @@
-import { ServiceRequestEntity, RequestStatus } from '../../../../core/entities/service-request.entity';
+import {
+  ServiceRequestEntity,
+  RequestStatus,
+} from '../../../../core/entities/service-request.entity';
 
 export class ServiceRequestResponseDto {
   id: string;

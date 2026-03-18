@@ -1,4 +1,11 @@
-import { IsArray, IsString, IsNotEmpty, ValidateNested, IsIn, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsString,
+  IsNotEmpty,
+  ValidateNested,
+  IsIn,
+  MaxLength,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class ChatMessageDto {
@@ -27,4 +34,3 @@ export class AiChatResponseDto {
     this.providers = providers;
   }
 }
-

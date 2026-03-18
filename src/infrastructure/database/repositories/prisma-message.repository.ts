@@ -75,10 +75,7 @@ export class PrismaMessageRepository implements IMessageRepository {
     // Get all service requests where this user is either the client or the provider
     const requests = await this.prisma.serviceRequest.findMany({
       where: {
-        OR: [
-          { clientId: userId },
-          { provider: { userId } },
-        ],
+        OR: [{ clientId: userId }, { provider: { userId } }],
         messages: { some: {} }, // Only requests that have at least one message
       },
       include: {
@@ -157,13 +154,9 @@ export class PrismaMessageRepository implements IMessageRepository {
         read: false,
         senderId: { not: userId },
         request: {
-          OR: [
-            { clientId: userId },
-            { provider: { userId } },
-          ],
+          OR: [{ clientId: userId }, { provider: { userId } }],
         },
       },
     });
   }
 }
-

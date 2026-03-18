@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { IProviderRepository, ProviderSearchFilters } from '../../repositories/provider.repository.interface';
+import type {
+  IProviderRepository,
+  ProviderSearchFilters,
+} from '../../repositories/provider.repository.interface';
 import { ProviderEntity } from '../../entities/provider.entity';
 
 @Injectable()
@@ -13,4 +16,3 @@ export class SearchProvidersUseCase {
     return await this.providerRepository.findAll(filters);
   }
 }
-

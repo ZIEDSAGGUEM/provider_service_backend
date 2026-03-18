@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import type { INotificationRepository, CreateNotificationDto } from '../../../core/repositories/notification.repository.interface';
+import type {
+  INotificationRepository,
+  CreateNotificationDto,
+} from '../../../core/repositories/notification.repository.interface';
 import { NotificationEntity } from '../../../core/entities/notification.entity';
 
 @Injectable()
@@ -47,4 +50,3 @@ export class PrismaNotificationRepository implements INotificationRepository {
     return this.prisma.notification.count({ where: { userId, read: false } });
   }
 }
-

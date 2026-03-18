@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { IReviewRepository, CreateReviewData } from '../../../core/repositories/review.repository.interface';
+import {
+  IReviewRepository,
+  CreateReviewData,
+} from '../../../core/repositories/review.repository.interface';
 import { ReviewEntity } from '../../../core/entities/review.entity';
 
 @Injectable()
@@ -17,11 +20,13 @@ export class PrismaReviewRepository implements IReviewRepository {
       comment: review.comment,
       createdAt: review.createdAt,
       updatedAt: review.updatedAt,
-      client: review.client ? {
-        id: review.client.id,
-        name: review.client.name,
-        avatar: review.client.avatar,
-      } : undefined,
+      client: review.client
+        ? {
+            id: review.client.id,
+            name: review.client.name,
+            avatar: review.client.avatar,
+          }
+        : undefined,
     });
   }
 
@@ -118,7 +123,9 @@ export class PrismaReviewRepository implements IReviewRepository {
     return reviews.map((r) => this.mapToEntity(r));
   }
 
-  async calculateProviderRating(providerId: string): Promise<{ rating: number; count: number }> {
+  async calculateProviderRating(
+    providerId: string,
+  ): Promise<{ rating: number; count: number }> {
     const result = await this.prisma.review.aggregate({
       where: { providerId },
       _avg: {
@@ -135,4 +142,3 @@ export class PrismaReviewRepository implements IReviewRepository {
     };
   }
 }
-

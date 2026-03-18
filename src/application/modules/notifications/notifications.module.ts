@@ -13,9 +13,11 @@ import { AuthModule } from '../auth/auth.module';
   providers: [
     NotificationsService,
     PrismaService,
-    { provide: 'INotificationRepository', useClass: PrismaNotificationRepository },
+    {
+      provide: 'INotificationRepository',
+      useClass: PrismaNotificationRepository,
+    },
   ],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}
-

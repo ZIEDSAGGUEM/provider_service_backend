@@ -74,4 +74,3 @@ export class UploadsController {
     return this.uploadsService.removePortfolioImage(user.id, imageUrl);
   }
 }
-

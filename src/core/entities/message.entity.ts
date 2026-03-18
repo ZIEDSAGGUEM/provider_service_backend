@@ -30,4 +30,3 @@ export class MessageEntity {
     Object.assign(this, data);
   }
 }
-

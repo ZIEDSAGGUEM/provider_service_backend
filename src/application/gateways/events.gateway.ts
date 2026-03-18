@@ -77,7 +77,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { requestId: string },
   ) {
     client.join(`conversation:${data.requestId}`);
-    this.logger.log(`Socket ${client.id} joined conversation:${data.requestId}`);
+    this.logger.log(
+      `Socket ${client.id} joined conversation:${data.requestId}`,
+    );
   }
 
   @SubscribeMessage('leaveConversation')
@@ -98,8 +100,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!userId) return;
 
     try {
-      const message = await this.messagesService.sendMessage(userId, data.requestId, data.content);
-      this.server.to(`conversation:${data.requestId}`).emit('newMessage', message);
+      const message = await this.messagesService.sendMessage(
+        userId,
+        data.requestId,
+        data.content,
+      );
+      this.server
+        .to(`conversation:${data.requestId}`)
+        .emit('newMessage', message);
       return message;
     } catch (error: any) {
       client.emit('messageError', { error: error.message });
@@ -114,7 +122,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { requestId: string; message: any },
   ) {
     // Broadcast to everyone in the room EXCEPT the sender
-    client.to(`conversation:${data.requestId}`).emit('newMessage', data.message);
+    client
+      .to(`conversation:${data.requestId}`)
+      .emit('newMessage', data.message);
   }
 
   @SubscribeMessage('typing')

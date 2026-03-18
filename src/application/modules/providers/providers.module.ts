@@ -20,7 +20,7 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
   providers: [
     ProvidersService,
     PrismaService,
-    
+
     // Use Cases
     CreateProviderUseCase,
     GetProviderUseCase,
@@ -28,7 +28,7 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
     UpdateProviderUseCase,
     SearchProvidersUseCase,
     DeleteProviderUseCase,
-    
+
     // Repositories
     {
       provide: 'IProviderRepository',
@@ -42,4 +42,3 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
   exports: [ProvidersService],
 })
 export class ProvidersModule {}
-

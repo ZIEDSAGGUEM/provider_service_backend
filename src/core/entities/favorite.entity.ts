@@ -9,4 +9,3 @@ export class FavoriteEntity {
     Object.assign(this, props);
   }
 }
-

@@ -18,6 +18,10 @@ export class UserEntity {
   verificationTokenExpiry?: Date | null;
   passwordResetToken?: string | null;
   passwordResetTokenExpiry?: Date | null;
+  settings?: Record<string, any> | null;
+  failedLoginAttempts?: number;
+  lockedUntil?: Date | null;
+  refreshToken?: string | null;
   createdAt: Date;
   updatedAt: Date;
 
@@ -25,5 +29,3 @@ export class UserEntity {
     Object.assign(this, partial);
   }
 }
-
-

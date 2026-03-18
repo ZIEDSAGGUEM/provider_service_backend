@@ -17,11 +17,18 @@ export class MessagesService {
     @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
 
-  async sendMessage(senderId: string, requestId: string, content: string): Promise<MessageEntity> {
+  async sendMessage(
+    senderId: string,
+    requestId: string,
+    content: string,
+  ): Promise<MessageEntity> {
     return this.sendMessageUseCase.execute(senderId, requestId, content);
   }
 
-  async getConversation(requestId: string, userId: string): Promise<MessageEntity[]> {
+  async getConversation(
+    requestId: string,
+    userId: string,
+  ): Promise<MessageEntity[]> {
     return this.getConversationUseCase.execute(requestId, userId);
   }
 

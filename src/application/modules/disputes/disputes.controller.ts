@@ -1,7 +1,14 @@
 import {
-  Controller, Get, Post, Put,
-  Body, Param, Query,
-  UseGuards, HttpCode, HttpStatus,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -64,9 +71,12 @@ export class DisputesController {
   async resolve(
     @CurrentUser() user: UserEntity,
     @Param('id') id: string,
-    @Body() body: { resolution: 'CLIENT_FAVORED' | 'PROVIDER_FAVORED' | 'COMPROMISE'; adminNote?: string },
+    @Body()
+    body: {
+      resolution: 'CLIENT_FAVORED' | 'PROVIDER_FAVORED' | 'COMPROMISE';
+      adminNote?: string;
+    },
   ) {
     return this.disputesService.resolve(user.id, id, body);
   }
 }
-

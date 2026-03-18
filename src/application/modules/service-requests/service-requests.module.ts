@@ -25,7 +25,10 @@ import { EventsModule } from '../../gateways/events.module';
   providers: [
     ServiceRequestsService,
     PrismaService,
-    { provide: 'IServiceRequestRepository', useClass: PrismaServiceRequestRepository },
+    {
+      provide: 'IServiceRequestRepository',
+      useClass: PrismaServiceRequestRepository,
+    },
     { provide: 'IUserRepository', useClass: PrismaUserRepository },
     { provide: 'IProviderRepository', useClass: PrismaProviderRepository },
     { provide: 'ICategoryRepository', useClass: PrismaCategoryRepository },

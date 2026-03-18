@@ -1,4 +1,10 @@
-import { Injectable, Inject, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import type { IReviewRepository } from '../../repositories/review.repository.interface';
 import type { IServiceRequestRepository } from '../../repositories/service-request.repository.interface';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
@@ -35,18 +41,26 @@ export class CreateReviewUseCase {
 
     // Verify the request is COMPLETED
     if (request.status !== RequestStatus.COMPLETED) {
-      throw new BadRequestException('You can only review completed service requests');
+      throw new BadRequestException(
+        'You can only review completed service requests',
+      );
     }
 
     // Verify the user is the client of this request
     if (request.clientId !== userId) {
-      throw new ForbiddenException('You can only review your own service requests');
+      throw new ForbiddenException(
+        'You can only review your own service requests',
+      );
     }
 
     // Check if review already exists
-    const existingReview = await this.reviewRepository.findByRequestId(data.requestId);
+    const existingReview = await this.reviewRepository.findByRequestId(
+      data.requestId,
+    );
     if (existingReview) {
-      throw new BadRequestException('You have already reviewed this service request');
+      throw new BadRequestException(
+        'You have already reviewed this service request',
+      );
     }
 
     // Create the review
@@ -59,10 +73,14 @@ export class CreateReviewUseCase {
     });
 
     // Update provider's rating
-    const { rating, count } = await this.reviewRepository.calculateProviderRating(request.providerId);
-    await this.providerRepository.updateRating(request.providerId, rating, count);
+    const { rating, count } =
+      await this.reviewRepository.calculateProviderRating(request.providerId);
+    await this.providerRepository.updateRating(
+      request.providerId,
+      rating,
+      count,
+    );
 
     return review;
   }
 }
-

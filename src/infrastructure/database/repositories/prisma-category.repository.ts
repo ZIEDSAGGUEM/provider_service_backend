@@ -90,4 +90,3 @@ export class PrismaCategoryRepository implements ICategoryRepository {
     return new CategoryEntity(category);
   }
 }
-

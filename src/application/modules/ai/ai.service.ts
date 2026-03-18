@@ -1,5 +1,8 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import type { IAiService, AiChatMessage } from '../../../core/interfaces/ai.interface';
+import type {
+  IAiService,
+  AiChatMessage,
+} from '../../../core/interfaces/ai.interface';
 import type { IProviderRepository } from '../../../core/repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../../core/repositories/category.repository.interface';
 import { AiChatResponseDto } from './dto/chat.dto';
@@ -82,4 +85,3 @@ You MUST always respond in this exact JSON format:
 }`;
   }
 }
-

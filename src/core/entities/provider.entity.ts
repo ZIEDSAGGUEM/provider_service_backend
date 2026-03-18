@@ -44,4 +44,3 @@ export class ProviderEntity {
     Object.assign(this, data);
   }
 }
-

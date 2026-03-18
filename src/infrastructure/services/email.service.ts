@@ -20,9 +20,13 @@ export class EmailService {
     });
   }
 
-  async sendVerificationEmail(email: string, name: string, token: string): Promise<void> {
+  async sendVerificationEmail(
+    email: string,
+    name: string,
+    token: string,
+  ): Promise<void> {
     const verificationUrl = `${this.configService.get('FRONTEND_URL')}/verify-email?token=${token}`;
-    
+
     try {
       await this.transporter.sendMail({
         from: `"${this.configService.get('SMTP_FROM_NAME')}" <${this.configService.get('SMTP_FROM_EMAIL')}>`,
@@ -30,17 +34,24 @@ export class EmailService {
         subject: 'Verify Your Email Address',
         html: this.getVerificationEmailTemplate(name, verificationUrl),
       });
-      
+
       this.logger.log(`Verification email sent to ${email}`);
     } catch (error) {
-      this.logger.error(`Failed to send verification email to ${email}:`, error);
+      this.logger.error(
+        `Failed to send verification email to ${email}:`,
+        error,
+      );
       throw new Error('Failed to send verification email');
     }
   }
 
-  async sendPasswordResetEmail(email: string, name: string, token: string): Promise<void> {
+  async sendPasswordResetEmail(
+    email: string,
+    name: string,
+    token: string,
+  ): Promise<void> {
     const resetUrl = `${this.configService.get('FRONTEND_URL')}/reset-password?token=${token}`;
-    
+
     try {
       await this.transporter.sendMail({
         from: `"${this.configService.get('SMTP_FROM_NAME')}" <${this.configService.get('SMTP_FROM_EMAIL')}>`,
@@ -48,15 +59,21 @@ export class EmailService {
         subject: 'Reset Your Password',
         html: this.getPasswordResetEmailTemplate(name, resetUrl),
       });
-      
+
       this.logger.log(`Password reset email sent to ${email}`);
     } catch (error) {
-      this.logger.error(`Failed to send password reset email to ${email}:`, error);
+      this.logger.error(
+        `Failed to send password reset email to ${email}:`,
+        error,
+      );
       throw new Error('Failed to send password reset email');
     }
   }
 
-  private getVerificationEmailTemplate(name: string, verificationUrl: string): string {
+  private getVerificationEmailTemplate(
+    name: string,
+    verificationUrl: string,
+  ): string {
     return `
       <!DOCTYPE html>
       <html>
@@ -94,7 +111,10 @@ export class EmailService {
     `;
   }
 
-  private getPasswordResetEmailTemplate(name: string, resetUrl: string): string {
+  private getPasswordResetEmailTemplate(
+    name: string,
+    resetUrl: string,
+  ): string {
     return `
       <!DOCTYPE html>
       <html>
@@ -132,4 +152,3 @@ export class EmailService {
     `;
   }
 }
-

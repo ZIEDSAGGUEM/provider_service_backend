@@ -1,4 +1,7 @@
-import { ServiceRequestEntity, RequestStatus } from '../entities/service-request.entity';
+import {
+  ServiceRequestEntity,
+  RequestStatus,
+} from '../entities/service-request.entity';
 
 export interface CreateServiceRequestDto {
   clientId: string;
@@ -42,9 +45,17 @@ export interface IServiceRequestRepository {
   create(data: CreateServiceRequestDto): Promise<ServiceRequestEntity>;
   findById(id: string): Promise<ServiceRequestEntity | null>;
   findAll(filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]>;
-  findByClient(clientId: string, filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]>;
-  findByProvider(providerId: string, filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]>;
-  update(id: string, data: UpdateServiceRequestDto): Promise<ServiceRequestEntity>;
+  findByClient(
+    clientId: string,
+    filters?: ServiceRequestFilters,
+  ): Promise<ServiceRequestEntity[]>;
+  findByProvider(
+    providerId: string,
+    filters?: ServiceRequestFilters,
+  ): Promise<ServiceRequestEntity[]>;
+  update(
+    id: string,
+    data: UpdateServiceRequestDto,
+  ): Promise<ServiceRequestEntity>;
   delete(id: string): Promise<void>;
 }
-

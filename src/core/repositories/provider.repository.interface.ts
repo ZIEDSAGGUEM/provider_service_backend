@@ -1,4 +1,9 @@
-import { ProviderEntity, ProviderStatus, AvailabilityStatus, AvailabilitySchedule } from '../entities/provider.entity';
+import {
+  ProviderEntity,
+  ProviderStatus,
+  AvailabilityStatus,
+  AvailabilitySchedule,
+} from '../entities/provider.entity';
 
 export interface CreateProviderDto {
   userId: string;
@@ -50,7 +55,10 @@ export interface IProviderRepository {
   findAll(filters?: ProviderSearchFilters): Promise<ProviderEntity[]>;
   update(id: string, data: UpdateProviderDto): Promise<ProviderEntity>;
   delete(id: string): Promise<void>;
-  updateRating(id: string, rating: number, reviewCount: number): Promise<ProviderEntity>;
+  updateRating(
+    id: string,
+    rating: number,
+    reviewCount: number,
+  ): Promise<ProviderEntity>;
   incrementCompletedJobs(id: string): Promise<ProviderEntity>;
 }
-

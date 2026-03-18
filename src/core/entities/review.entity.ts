@@ -7,7 +7,7 @@ export class ReviewEntity {
   comment: string;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations (populated by repository)
   client?: {
     id: string;
@@ -19,4 +19,3 @@ export class ReviewEntity {
     Object.assign(this, partial);
   }
 }
-

@@ -25,4 +25,3 @@ export class NotificationEntity {
     Object.assign(this, props);
   }
 }
-

@@ -23,4 +23,3 @@ export interface ICategoryRepository {
   incrementProviderCount(id: string): Promise<CategoryEntity>;
   decrementProviderCount(id: string): Promise<CategoryEntity>;
 }
-

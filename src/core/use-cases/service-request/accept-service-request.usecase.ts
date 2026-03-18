@@ -1,16 +1,30 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import type { IServiceRequestRepository } from '../../repositories/service-request.repository.interface';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
-import { ServiceRequestEntity, RequestStatus } from '../../entities/service-request.entity';
+import {
+  ServiceRequestEntity,
+  RequestStatus,
+} from '../../entities/service-request.entity';
 
 @Injectable()
 export class AcceptServiceRequestUseCase {
   constructor(
-    @Inject('IServiceRequestRepository') private readonly requestRepository: IServiceRequestRepository,
-    @Inject('IProviderRepository') private readonly providerRepository: IProviderRepository,
+    @Inject('IServiceRequestRepository')
+    private readonly requestRepository: IServiceRequestRepository,
+    @Inject('IProviderRepository')
+    private readonly providerRepository: IProviderRepository,
   ) {}
 
-  async execute(requestId: string, userId: string): Promise<ServiceRequestEntity> {
+  async execute(
+    requestId: string,
+    userId: string,
+  ): Promise<ServiceRequestEntity> {
     // Get the service request
     const request = await this.requestRepository.findById(requestId);
     if (!request) {
@@ -30,7 +44,9 @@ export class AcceptServiceRequestUseCase {
 
     // Verify the request is in PENDING status
     if (request.status !== RequestStatus.PENDING) {
-      throw new BadRequestException(`Cannot accept request with status: ${request.status}`);
+      throw new BadRequestException(
+        `Cannot accept request with status: ${request.status}`,
+      );
     }
 
     // Accept the request
@@ -39,4 +55,3 @@ export class AcceptServiceRequestUseCase {
     });
   }
 }
-

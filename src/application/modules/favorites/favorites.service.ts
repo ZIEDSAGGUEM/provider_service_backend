@@ -9,7 +9,10 @@ export class FavoritesService {
     private readonly favoriteRepository: IFavoriteRepository,
   ) {}
 
-  async toggle(userId: string, providerId: string): Promise<{ favorited: boolean }> {
+  async toggle(
+    userId: string,
+    providerId: string,
+  ): Promise<{ favorited: boolean }> {
     return this.favoriteRepository.toggle(userId, providerId);
   }
 
@@ -21,4 +24,3 @@ export class FavoritesService {
     return this.favoriteRepository.isFavorited(userId, providerId);
   }
 }
-

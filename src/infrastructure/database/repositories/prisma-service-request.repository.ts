@@ -6,7 +6,10 @@ import {
   UpdateServiceRequestDto,
   ServiceRequestFilters,
 } from '../../../core/repositories/service-request.repository.interface';
-import { ServiceRequestEntity, RequestStatus } from '../../../core/entities/service-request.entity';
+import {
+  ServiceRequestEntity,
+  RequestStatus,
+} from '../../../core/entities/service-request.entity';
 
 @Injectable()
 export class PrismaServiceRequestRepository implements IServiceRequestRepository {
@@ -34,40 +37,50 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
       completionNotes: request.completionNotes,
       createdAt: request.createdAt,
       updatedAt: request.updatedAt,
-      client: request.client ? {
-        id: request.client.id,
-        name: request.client.name,
-        email: request.client.email,
-        avatar: request.client.avatar,
-        phone: request.client.phone,
-        location: request.client.location,
-      } : undefined,
-      provider: request.provider ? {
-        id: request.provider.id,
-        userId: request.provider.userId,
-        categoryId: request.provider.categoryId,
-        hourlyRate: request.provider.hourlyRate,
-        rating: request.provider.rating,
-        reviewCount: request.provider.reviewCount,
-        user: request.provider.user ? {
-          id: request.provider.user.id,
-          name: request.provider.user.name,
-          avatar: request.provider.user.avatar,
-          phone: request.provider.user.phone,
-          location: request.provider.user.location,
-        } : undefined,
-        category: request.provider.category ? {
-          id: request.provider.category.id,
-          name: request.provider.category.name,
-          icon: request.provider.category.icon,
-        } : undefined,
-      } : undefined,
-      category: request.category ? {
-        id: request.category.id,
-        name: request.category.name,
-        icon: request.category.icon,
-        description: request.category.description,
-      } : undefined,
+      client: request.client
+        ? {
+            id: request.client.id,
+            name: request.client.name,
+            email: request.client.email,
+            avatar: request.client.avatar,
+            phone: request.client.phone,
+            location: request.client.location,
+          }
+        : undefined,
+      provider: request.provider
+        ? {
+            id: request.provider.id,
+            userId: request.provider.userId,
+            categoryId: request.provider.categoryId,
+            hourlyRate: request.provider.hourlyRate,
+            rating: request.provider.rating,
+            reviewCount: request.provider.reviewCount,
+            user: request.provider.user
+              ? {
+                  id: request.provider.user.id,
+                  name: request.provider.user.name,
+                  avatar: request.provider.user.avatar,
+                  phone: request.provider.user.phone,
+                  location: request.provider.user.location,
+                }
+              : undefined,
+            category: request.provider.category
+              ? {
+                  id: request.provider.category.id,
+                  name: request.provider.category.name,
+                  icon: request.provider.category.icon,
+                }
+              : undefined,
+          }
+        : undefined,
+      category: request.category
+        ? {
+            id: request.category.id,
+            name: request.category.name,
+            icon: request.category.icon,
+            description: request.category.description,
+          }
+        : undefined,
     });
   }
 
@@ -118,14 +131,16 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
     return request ? this.mapToEntity(request) : null;
   }
 
-  async findAll(filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]> {
+  async findAll(
+    filters?: ServiceRequestFilters,
+  ): Promise<ServiceRequestEntity[]> {
     const where: any = {};
 
     if (filters?.clientId) where.clientId = filters.clientId;
     if (filters?.providerId) where.providerId = filters.providerId;
     if (filters?.categoryId) where.categoryId = filters.categoryId;
     if (filters?.status) where.status = filters.status;
-    
+
     if (filters?.fromDate || filters?.toDate) {
       where.preferredDate = {};
       if (filters.fromDate) where.preferredDate.gte = filters.fromDate;
@@ -152,31 +167,49 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
     return requests.map((r) => this.mapToEntity(r));
   }
 
-  async findByClient(clientId: string, filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]> {
+  async findByClient(
+    clientId: string,
+    filters?: ServiceRequestFilters,
+  ): Promise<ServiceRequestEntity[]> {
     return this.findAll({ ...filters, clientId });
   }
 
-  async findByProvider(providerId: string, filters?: ServiceRequestFilters): Promise<ServiceRequestEntity[]> {
+  async findByProvider(
+    providerId: string,
+    filters?: ServiceRequestFilters,
+  ): Promise<ServiceRequestEntity[]> {
     return this.findAll({ ...filters, providerId });
   }
 
-  async update(id: string, data: UpdateServiceRequestDto): Promise<ServiceRequestEntity> {
+  async update(
+    id: string,
+    data: UpdateServiceRequestDto,
+  ): Promise<ServiceRequestEntity> {
     // Build update data dynamically to only include defined fields
     const updateData: any = {};
     if (data.title !== undefined) updateData.title = data.title;
-    if (data.description !== undefined) updateData.description = data.description;
+    if (data.description !== undefined)
+      updateData.description = data.description;
     if (data.location !== undefined) updateData.location = data.location;
-    if (data.preferredDate !== undefined) updateData.preferredDate = data.preferredDate;
-    if (data.preferredTime !== undefined) updateData.preferredTime = data.preferredTime;
-    if (data.estimatedBudget !== undefined) updateData.estimatedBudget = data.estimatedBudget;
-    if (data.scheduledDate !== undefined) updateData.scheduledDate = data.scheduledDate;
+    if (data.preferredDate !== undefined)
+      updateData.preferredDate = data.preferredDate;
+    if (data.preferredTime !== undefined)
+      updateData.preferredTime = data.preferredTime;
+    if (data.estimatedBudget !== undefined)
+      updateData.estimatedBudget = data.estimatedBudget;
+    if (data.scheduledDate !== undefined)
+      updateData.scheduledDate = data.scheduledDate;
     if (data.finalPrice !== undefined) updateData.finalPrice = data.finalPrice;
     if (data.status !== undefined) updateData.status = data.status;
-    if (data.cancelledBy !== undefined) updateData.cancelledBy = data.cancelledBy;
-    if (data.cancelReason !== undefined) updateData.cancelReason = data.cancelReason;
+    if (data.cancelledBy !== undefined)
+      updateData.cancelledBy = data.cancelledBy;
+    if (data.cancelReason !== undefined)
+      updateData.cancelReason = data.cancelReason;
     if (data.startedAt !== undefined) updateData.startedAt = data.startedAt;
-    if (data.completedAt !== undefined) updateData.completedAt = data.completedAt;
-    if (data.completionNotes !== undefined) updateData.completionNotes = data.completionNotes;
+    if (data.completedAt !== undefined)
+      updateData.completedAt = data.completedAt;
+    if (data.completionNotes !== undefined)
+      updateData.completionNotes = data.completionNotes;
 
     const request = await this.prisma.serviceRequest.update({
       where: { id },
@@ -202,4 +235,3 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
     });
   }
 }
-

@@ -12,9 +12,10 @@ export class GetMyProviderUseCase {
   async execute(userId: string): Promise<ProviderEntity> {
     const provider = await this.providerRepository.findByUserId(userId);
     if (!provider) {
-      throw new NotFoundException('Provider profile not found. Please create a profile first.');
+      throw new NotFoundException(
+        'Provider profile not found. Please create a profile first.',
+      );
     }
     return provider;
   }
 }
-

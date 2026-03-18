@@ -11,7 +11,10 @@ export class ReviewsService {
     private readonly getProviderReviewsUseCase: GetProviderReviewsUseCase,
   ) {}
 
-  async createReview(userId: string, dto: CreateReviewDto): Promise<ReviewEntity> {
+  async createReview(
+    userId: string,
+    dto: CreateReviewDto,
+  ): Promise<ReviewEntity> {
     return this.createReviewUseCase.execute(userId, {
       requestId: dto.requestId,
       rating: dto.rating,
@@ -23,4 +26,3 @@ export class ReviewsService {
     return this.getProviderReviewsUseCase.execute(providerId);
   }
 }
-

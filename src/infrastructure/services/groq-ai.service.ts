@@ -19,7 +19,8 @@ export class GroqAiService implements IAiService {
       this.logger.warn('GROQ_API_KEY is not set — AI chat will be unavailable');
     }
     this.client = new Groq({ apiKey: apiKey || '' });
-    this.model = this.configService.get<string>('GROQ_MODEL') || 'llama-3.3-70b-versatile';
+    this.model =
+      this.configService.get<string>('GROQ_MODEL') || 'llama-3.3-70b-versatile';
   }
 
   async chat(
@@ -30,7 +31,7 @@ export class GroqAiService implements IAiService {
       const groqMessages: Groq.Chat.Completions.ChatCompletionMessageParam[] = [
         { role: 'system', content: systemPrompt },
         ...messages.map((m) => ({
-          role: m.role as 'user' | 'assistant',
+          role: m.role,
           content: m.content,
         })),
       ];
@@ -68,4 +69,3 @@ export class GroqAiService implements IAiService {
     }
   }
 }
-

@@ -4,7 +4,8 @@ import type { IMessageRepository } from '../../repositories/message.repository.i
 @Injectable()
 export class GetUnreadCountUseCase {
   constructor(
-    @Inject('IMessageRepository') private readonly messageRepository: IMessageRepository,
+    @Inject('IMessageRepository')
+    private readonly messageRepository: IMessageRepository,
   ) {}
 
   async execute(userId: string): Promise<{ count: number }> {
@@ -12,4 +13,3 @@ export class GetUnreadCountUseCase {
     return { count };
   }
 }
-

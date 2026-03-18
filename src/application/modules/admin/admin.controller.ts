@@ -1,7 +1,15 @@
 import {
-  Controller, Get, Post, Put, Delete,
-  Param, Query, Body,
-  UseGuards, HttpCode, HttpStatus,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Query,
+  Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -55,19 +63,27 @@ export class AdminController {
   }
 
   @Put('providers/:id/status')
-  async updateProviderStatus(@Param('id') id: string, @Body('status') status: string) {
+  async updateProviderStatus(
+    @Param('id') id: string,
+    @Body('status') status: string,
+  ) {
     return this.adminService.updateProviderStatus(id, status);
   }
 
   // ── Categories ──
   @Post('categories')
   @HttpCode(HttpStatus.CREATED)
-  async createCategory(@Body() data: { name: string; icon: string; description: string }) {
+  async createCategory(
+    @Body() data: { name: string; icon: string; description: string },
+  ) {
     return this.adminService.createCategory(data);
   }
 
   @Put('categories/:id')
-  async updateCategory(@Param('id') id: string, @Body() data: { name?: string; icon?: string; description?: string }) {
+  async updateCategory(
+    @Param('id') id: string,
+    @Body() data: { name?: string; icon?: string; description?: string },
+  ) {
     return this.adminService.updateCategory(id, data);
   }
 
@@ -77,4 +93,3 @@ export class AdminController {
     return this.adminService.deleteCategory(id);
   }
 }
-

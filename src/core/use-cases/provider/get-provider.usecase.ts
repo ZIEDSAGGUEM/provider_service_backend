@@ -17,4 +17,3 @@ export class GetProviderUseCase {
     return provider;
   }
 }
-

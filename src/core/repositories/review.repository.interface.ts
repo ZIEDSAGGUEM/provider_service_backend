@@ -37,6 +37,7 @@ export interface IReviewRepository {
   /**
    * Calculate average rating for a provider
    */
-  calculateProviderRating(providerId: string): Promise<{ rating: number; count: number }>;
+  calculateProviderRating(
+    providerId: string,
+  ): Promise<{ rating: number; count: number }>;
 }
-

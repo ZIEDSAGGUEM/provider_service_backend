@@ -1,4 +1,7 @@
-import { NotificationEntity, NotificationType } from '../entities/notification.entity';
+import {
+  NotificationEntity,
+  NotificationType,
+} from '../entities/notification.entity';
 
 export interface CreateNotificationDto {
   userId: string;
@@ -15,4 +18,3 @@ export interface INotificationRepository {
   markAllAsRead(userId: string): Promise<void>;
   getUnreadCount(userId: string): Promise<number>;
 }
-

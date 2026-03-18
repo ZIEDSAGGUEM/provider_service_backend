@@ -1,4 +1,10 @@
-import { Injectable, Inject, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import type { IServiceRequestRepository } from '../../repositories/service-request.repository.interface';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
 import { RequestStatus } from '@prisma/client';
@@ -27,13 +33,15 @@ export class StartServiceRequestUseCase {
 
     // Verify this request belongs to the provider
     if (request.providerId !== provider.id) {
-      throw new ForbiddenException('You can only start your own service requests');
+      throw new ForbiddenException(
+        'You can only start your own service requests',
+      );
     }
 
     // Verify status is ACCEPTED
     if (request.status !== RequestStatus.ACCEPTED) {
       throw new BadRequestException(
-        `Cannot start request with status ${request.status}. Request must be ACCEPTED first.`
+        `Cannot start request with status ${request.status}. Request must be ACCEPTED first.`,
       );
     }
 
@@ -44,4 +52,3 @@ export class StartServiceRequestUseCase {
     });
   }
 }
-

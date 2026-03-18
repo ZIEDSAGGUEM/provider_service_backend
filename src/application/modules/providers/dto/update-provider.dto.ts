@@ -1,4 +1,13 @@
-import { IsString, IsNumber, IsArray, IsOptional, IsEnum, IsObject, Min, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsArray,
+  IsOptional,
+  IsEnum,
+  IsObject,
+  Min,
+  MaxLength,
+} from 'class-validator';
 import { AvailabilityStatus } from '../../../../core/entities/provider.entity';
 import type { AvailabilitySchedule } from '../../../../core/entities/provider.entity';
 
@@ -54,4 +63,3 @@ export class UpdateProviderDto {
   @IsString({ each: true })
   certifications?: string[];
 }
-

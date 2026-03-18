@@ -11,4 +11,3 @@ export class CategoryEntity {
     Object.assign(this, data);
   }
 }
-

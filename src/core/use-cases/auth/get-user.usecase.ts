@@ -19,4 +19,3 @@ export class GetUserUseCase {
     return user;
   }
 }
-

@@ -32,7 +32,9 @@ export class ReviewsController {
     @CurrentUser() user: UserEntity,
     @Body() dto: CreateReviewDto,
   ): Promise<ReviewResponseDto> {
-    this.logger.log(`Client ${user.id} creating review for request ${dto.requestId}`);
+    this.logger.log(
+      `Client ${user.id} creating review for request ${dto.requestId}`,
+    );
     const review = await this.reviewsService.createReview(user.id, dto);
     return new ReviewResponseDto(review);
   }

@@ -1,6 +1,18 @@
-import { IsOptional, IsString, IsNumber, IsArray, IsEnum, IsBoolean, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsArray,
+  IsEnum,
+  IsBoolean,
+  Min,
+  Max,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { AvailabilityStatus, ProviderStatus } from '../../../../core/entities/provider.entity';
+import {
+  AvailabilityStatus,
+  ProviderStatus,
+} from '../../../../core/entities/provider.entity';
 
 export class SearchProvidersDto {
   @IsOptional()
@@ -52,4 +64,3 @@ export class SearchProvidersDto {
   @Min(1)
   serviceRadius?: number;
 }
-

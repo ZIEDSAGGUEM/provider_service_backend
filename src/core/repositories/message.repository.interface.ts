@@ -29,4 +29,3 @@ export interface IMessageRepository {
   markAsRead(requestId: string, userId: string): Promise<void>;
   getUnreadCount(userId: string): Promise<number>;
 }
-

@@ -1,5 +1,13 @@
-import { Inject, Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import type { IProviderRepository, CreateProviderDto } from '../../repositories/provider.repository.interface';
+import {
+  Inject,
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import type {
+  IProviderRepository,
+  CreateProviderDto,
+} from '../../repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../repositories/category.repository.interface';
 import { ProviderEntity } from '../../entities/provider.entity';
 
@@ -13,9 +21,13 @@ export class CreateProviderUseCase {
   ) {}
 
   async execute(data: CreateProviderDto): Promise<ProviderEntity> {
-    const existingProvider = await this.providerRepository.findByUserId(data.userId);
+    const existingProvider = await this.providerRepository.findByUserId(
+      data.userId,
+    );
     if (existingProvider) {
-      throw new BadRequestException('Provider profile already exists for this user');
+      throw new BadRequestException(
+        'Provider profile already exists for this user',
+      );
     }
 
     const category = await this.categoryRepository.findById(data.categoryId);

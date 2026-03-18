@@ -24,7 +24,10 @@ export class ProvidersService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async createProvider(userId: string, dto: CreateProviderDto): Promise<ProviderResponseDto> {
+  async createProvider(
+    userId: string,
+    dto: CreateProviderDto,
+  ): Promise<ProviderResponseDto> {
     const data: CreateProviderUseCaseDto = {
       userId,
       categoryId: dto.categoryId,
@@ -53,7 +56,9 @@ export class ProvidersService {
     return new ProviderResponseDto(provider);
   }
 
-  async searchProviders(dto: SearchProvidersDto): Promise<ProviderResponseDto[]> {
+  async searchProviders(
+    dto: SearchProvidersDto,
+  ): Promise<ProviderResponseDto[]> {
     const providers = await this.searchProvidersUseCase.execute({
       q: dto.q,
       categoryId: dto.categoryId,
@@ -70,7 +75,11 @@ export class ProvidersService {
     return providers.map((provider) => new ProviderResponseDto(provider));
   }
 
-  async updateProvider(id: string, userId: string, dto: UpdateProviderDto): Promise<ProviderResponseDto> {
+  async updateProvider(
+    id: string,
+    userId: string,
+    dto: UpdateProviderDto,
+  ): Promise<ProviderResponseDto> {
     const provider = await this.updateProviderUseCase.execute(id, userId, {
       categoryId: dto.categoryId,
       bio: dto.bio,
@@ -93,7 +102,9 @@ export class ProvidersService {
   }
 
   async getAnalytics(userId: string) {
-    const provider = await this.prisma.provider.findUnique({ where: { userId } });
+    const provider = await this.prisma.provider.findUnique({
+      where: { userId },
+    });
     if (!provider) throw new NotFoundException('Provider profile not found');
 
     const now = new Date();
@@ -139,16 +150,33 @@ export class ProvidersService {
     ]);
 
     // Build status counts
-    const statusCounts: Record<string, number> = { PENDING: 0, ACCEPTED: 0, IN_PROGRESS: 0, COMPLETED: 0, CANCELLED: 0 };
+    const statusCounts: Record<string, number> = {
+      PENDING: 0,
+      ACCEPTED: 0,
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
+    };
     for (const r of requestsByStatus) statusCounts[r.status] = r._count;
 
     // Build monthly chart data (last 6 months)
-    const monthlyChart: { month: string; jobs: number; earnings: number }[] = [];
+    const monthlyChart: { month: string; jobs: number; earnings: number }[] =
+      [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const label = d.toLocaleString('en-US', { month: 'short', year: '2-digit' });
+      const label = d.toLocaleString('en-US', {
+        month: 'short',
+        year: '2-digit',
+      });
       const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
-      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+      const monthEnd = new Date(
+        d.getFullYear(),
+        d.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+      );
 
       let jobs = 0;
       let earnings = 0;
@@ -156,7 +184,8 @@ export class ProvidersService {
         const c = new Date(req.createdAt);
         if (c >= monthStart && c <= monthEnd) {
           jobs++;
-          if (req.status === 'COMPLETED' && req.finalPrice) earnings += req.finalPrice;
+          if (req.status === 'COMPLETED' && req.finalPrice)
+            earnings += req.finalPrice;
         }
       }
       monthlyChart.push({ month: label, jobs, earnings });
@@ -178,4 +207,3 @@ export class ProvidersService {
     };
   }
 }
-

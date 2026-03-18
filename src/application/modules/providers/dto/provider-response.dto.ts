@@ -1,4 +1,9 @@
-import { ProviderEntity, AvailabilityStatus, ProviderStatus, AvailabilitySchedule } from '../../../../core/entities/provider.entity';
+import {
+  ProviderEntity,
+  AvailabilityStatus,
+  ProviderStatus,
+  AvailabilitySchedule,
+} from '../../../../core/entities/provider.entity';
 
 export class ProviderResponseDto {
   id: string;
@@ -83,4 +88,3 @@ export class ProviderResponseDto {
     }
   }
 }
-

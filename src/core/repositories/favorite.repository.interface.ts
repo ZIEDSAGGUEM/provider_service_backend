@@ -6,4 +6,3 @@ export interface IFavoriteRepository {
   isFavorited(userId: string, providerId: string): Promise<boolean>;
   count(providerId: string): Promise<number>;
 }
-

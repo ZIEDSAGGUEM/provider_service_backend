@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from './application/modules/auth/auth.module';
 import { ProvidersModule } from './application/modules/providers/providers.module';
 import { CategoriesModule } from './application/modules/categories/categories.module';
@@ -17,6 +19,23 @@ import { DisputesModule } from './application/modules/disputes/disputes.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000,
+        limit: 3,
+      },
+      {
+        name: 'medium',
+        ttl: 10000,
+        limit: 20,
+      },
+      {
+        name: 'long',
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
     AuthModule,
     ProvidersModule,
     CategoriesModule,
@@ -30,6 +49,12 @@ import { DisputesModule } from './application/modules/disputes/disputes.module';
     UploadsModule,
     AdminModule,
     DisputesModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

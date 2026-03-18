@@ -30,7 +30,9 @@ import { RequestStatus } from '../../../core/entities/service-request.entity';
 export class ServiceRequestsController {
   private readonly logger = new Logger(ServiceRequestsController.name);
 
-  constructor(private readonly serviceRequestsService: ServiceRequestsService) {}
+  constructor(
+    private readonly serviceRequestsService: ServiceRequestsService,
+  ) {}
 
   @Post()
   @Roles(UserRole.CLIENT)
@@ -40,7 +42,10 @@ export class ServiceRequestsController {
     @Body() dto: CreateServiceRequestDto,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Creating service request by client: ${user.id}`);
-    const request = await this.serviceRequestsService.createRequest(user.id, dto);
+    const request = await this.serviceRequestsService.createRequest(
+      user.id,
+      dto,
+    );
     return new ServiceRequestResponseDto(request);
   }
 
@@ -51,7 +56,10 @@ export class ServiceRequestsController {
     @Query('status') status?: RequestStatus,
   ): Promise<ServiceRequestResponseDto[]> {
     this.logger.log(`Fetching requests for client: ${user.id}`);
-    const requests = await this.serviceRequestsService.getMyRequests(user.id, status);
+    const requests = await this.serviceRequestsService.getMyRequests(
+      user.id,
+      status,
+    );
     return requests.map((req) => new ServiceRequestResponseDto(req));
   }
 
@@ -62,7 +70,10 @@ export class ServiceRequestsController {
     @Query('status') status?: RequestStatus,
   ): Promise<ServiceRequestResponseDto[]> {
     this.logger.log(`Fetching requests for provider: ${user.id}`);
-    const requests = await this.serviceRequestsService.getProviderRequests(user.id, status);
+    const requests = await this.serviceRequestsService.getProviderRequests(
+      user.id,
+      status,
+    );
     return requests.map((req) => new ServiceRequestResponseDto(req));
   }
 
@@ -73,7 +84,10 @@ export class ServiceRequestsController {
     @Param('id') id: string,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Fetching service request ${id} by user: ${user.id}`);
-    const request = await this.serviceRequestsService.getRequestById(id, user.id);
+    const request = await this.serviceRequestsService.getRequestById(
+      id,
+      user.id,
+    );
     return new ServiceRequestResponseDto(request);
   }
 
@@ -86,7 +100,11 @@ export class ServiceRequestsController {
     @Body() dto: CancelServiceRequestDto,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Cancelling service request ${id} by client: ${user.id}`);
-    const request = await this.serviceRequestsService.cancelRequest(id, user.id, dto.reason);
+    const request = await this.serviceRequestsService.cancelRequest(
+      id,
+      user.id,
+      dto.reason,
+    );
     return new ServiceRequestResponseDto(request);
   }
 
@@ -98,7 +116,10 @@ export class ServiceRequestsController {
     @Param('id') id: string,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Provider ${user.id} accepting service request ${id}`);
-    const request = await this.serviceRequestsService.acceptRequest(id, user.id);
+    const request = await this.serviceRequestsService.acceptRequest(
+      id,
+      user.id,
+    );
     return new ServiceRequestResponseDto(request);
   }
 
@@ -111,7 +132,11 @@ export class ServiceRequestsController {
     @Body() dto: DeclineServiceRequestDto,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Provider ${user.id} declining service request ${id}`);
-    const request = await this.serviceRequestsService.declineRequest(id, user.id, dto.reason);
+    const request = await this.serviceRequestsService.declineRequest(
+      id,
+      user.id,
+      dto.reason,
+    );
     return new ServiceRequestResponseDto(request);
   }
 
@@ -136,8 +161,11 @@ export class ServiceRequestsController {
     @Body() dto: CompleteServiceRequestDto,
   ): Promise<ServiceRequestResponseDto> {
     this.logger.log(`Provider ${user.id} completing service request ${id}`);
-    const request = await this.serviceRequestsService.completeRequest(id, user.id, dto);
+    const request = await this.serviceRequestsService.completeRequest(
+      id,
+      user.id,
+      dto,
+    );
     return new ServiceRequestResponseDto(request);
   }
 }
-

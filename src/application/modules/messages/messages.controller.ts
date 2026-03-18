@@ -11,7 +11,10 @@ import {
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { SendMessageDto } from './dto/send-message.dto';
-import { MessageResponseDto, ConversationSummaryDto } from './dto/message-response.dto';
+import {
+  MessageResponseDto,
+  ConversationSummaryDto,
+} from './dto/message-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserEntity } from '../../../core/entities/user.entity';
@@ -33,8 +36,14 @@ export class MessagesController {
     @CurrentUser() user: UserEntity,
     @Body() dto: SendMessageDto,
   ): Promise<MessageResponseDto> {
-    this.logger.log(`User ${user.id} sending message to request ${dto.requestId}`);
-    const message = await this.messagesService.sendMessage(user.id, dto.requestId, dto.content);
+    this.logger.log(
+      `User ${user.id} sending message to request ${dto.requestId}`,
+    );
+    const message = await this.messagesService.sendMessage(
+      user.id,
+      dto.requestId,
+      dto.content,
+    );
     return new MessageResponseDto(message);
   }
 
@@ -71,9 +80,13 @@ export class MessagesController {
     @CurrentUser() user: UserEntity,
     @Param('requestId') requestId: string,
   ): Promise<MessageResponseDto[]> {
-    this.logger.log(`Fetching conversation for request ${requestId}, user ${user.id}`);
-    const messages = await this.messagesService.getConversation(requestId, user.id);
+    this.logger.log(
+      `Fetching conversation for request ${requestId}, user ${user.id}`,
+    );
+    const messages = await this.messagesService.getConversation(
+      requestId,
+      user.id,
+    );
     return messages.map((m) => new MessageResponseDto(m));
   }
 }
-

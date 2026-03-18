@@ -27,6 +27,10 @@ export interface UpdateUserDto {
   verificationTokenExpiry?: Date | null;
   passwordResetToken?: string | null;
   passwordResetTokenExpiry?: Date | null;
+  settings?: Record<string, any>;
+  failedLoginAttempts?: number;
+  lockedUntil?: Date | null;
+  refreshToken?: string | null;
 }
 
 export interface IUserRepository {
@@ -38,8 +42,3 @@ export interface IUserRepository {
   update(id: string, data: UpdateUserDto): Promise<UserEntity>;
   delete(id: string): Promise<void>;
 }
-
-
-
-
-

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 
 @Injectable()
@@ -50,17 +54,36 @@ export class AdminService {
     ]);
 
     const statusCounts: Record<string, number> = {
-      PENDING: 0, ACCEPTED: 0, IN_PROGRESS: 0, COMPLETED: 0, CANCELLED: 0,
+      PENDING: 0,
+      ACCEPTED: 0,
+      IN_PROGRESS: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
     };
     for (const r of requestsByStatus) statusCounts[r.status] = r._count;
 
     // Monthly chart
-    const monthlyChart: { month: string; signups: number; requests: number; revenue: number }[] = [];
+    const monthlyChart: {
+      month: string;
+      signups: number;
+      requests: number;
+      revenue: number;
+    }[] = [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const label = d.toLocaleString('en-US', { month: 'short', year: '2-digit' });
+      const label = d.toLocaleString('en-US', {
+        month: 'short',
+        year: '2-digit',
+      });
       const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
-      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+      const monthEnd = new Date(
+        d.getFullYear(),
+        d.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+      );
 
       let signups = 0;
       let requests = 0;
@@ -106,8 +129,15 @@ export class AdminService {
     return this.prisma.user.findMany({
       where,
       select: {
-        id: true, email: true, name: true, avatar: true, phone: true,
-        location: true, role: true, verified: true, createdAt: true,
+        id: true,
+        email: true,
+        name: true,
+        avatar: true,
+        phone: true,
+        location: true,
+        role: true,
+        verified: true,
+        createdAt: true,
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -116,7 +146,8 @@ export class AdminService {
   async updateUserRole(userId: string, role: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role === 'ADMIN') throw new BadRequestException('Cannot change admin role');
+    if (user.role === 'ADMIN')
+      throw new BadRequestException('Cannot change admin role');
 
     return this.prisma.user.update({
       where: { id: userId },
@@ -139,7 +170,8 @@ export class AdminService {
   async deleteUser(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role === 'ADMIN') throw new BadRequestException('Cannot delete admin');
+    if (user.role === 'ADMIN')
+      throw new BadRequestException('Cannot delete admin');
 
     await this.prisma.user.delete({ where: { id: userId } });
     return { success: true };
@@ -169,7 +201,9 @@ export class AdminService {
   }
 
   async toggleProviderVerification(providerId: string) {
-    const provider = await this.prisma.provider.findUnique({ where: { id: providerId } });
+    const provider = await this.prisma.provider.findUnique({
+      where: { id: providerId },
+    });
     if (!provider) throw new NotFoundException('Provider not found');
 
     return this.prisma.provider.update({
@@ -180,7 +214,9 @@ export class AdminService {
   }
 
   async updateProviderStatus(providerId: string, status: string) {
-    const provider = await this.prisma.provider.findUnique({ where: { id: providerId } });
+    const provider = await this.prisma.provider.findUnique({
+      where: { id: providerId },
+    });
     if (!provider) throw new NotFoundException('Provider not found');
 
     return this.prisma.provider.update({
@@ -191,14 +227,23 @@ export class AdminService {
   }
 
   // ── Categories ──
-  async createCategory(data: { name: string; icon: string; description: string }) {
-    const existing = await this.prisma.category.findUnique({ where: { name: data.name } });
+  async createCategory(data: {
+    name: string;
+    icon: string;
+    description: string;
+  }) {
+    const existing = await this.prisma.category.findUnique({
+      where: { name: data.name },
+    });
     if (existing) throw new BadRequestException('Category already exists');
 
     return this.prisma.category.create({ data });
   }
 
-  async updateCategory(id: string, data: { name?: string; icon?: string; description?: string }) {
+  async updateCategory(
+    id: string,
+    data: { name?: string; icon?: string; description?: string },
+  ) {
     const category = await this.prisma.category.findUnique({ where: { id } });
     if (!category) throw new NotFoundException('Category not found');
 
@@ -212,11 +257,12 @@ export class AdminService {
     });
     if (!category) throw new NotFoundException('Category not found');
     if (category._count.providers > 0) {
-      throw new BadRequestException('Cannot delete category with active providers');
+      throw new BadRequestException(
+        'Cannot delete category with active providers',
+      );
     }
 
     await this.prisma.category.delete({ where: { id } });
     return { success: true };
   }
 }
-

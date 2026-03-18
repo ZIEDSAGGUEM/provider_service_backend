@@ -36,8 +36,10 @@ export class FavoritesController {
     @CurrentUser() user: UserEntity,
     @Param('providerId') providerId: string,
   ) {
-    const favorited = await this.favoritesService.isFavorited(user.id, providerId);
+    const favorited = await this.favoritesService.isFavorited(
+      user.id,
+      providerId,
+    );
     return { favorited };
   }
 }
-

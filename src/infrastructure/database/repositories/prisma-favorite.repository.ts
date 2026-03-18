@@ -7,7 +7,10 @@ import { FavoriteEntity } from '../../../core/entities/favorite.entity';
 export class PrismaFavoriteRepository implements IFavoriteRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async toggle(userId: string, providerId: string): Promise<{ favorited: boolean }> {
+  async toggle(
+    userId: string,
+    providerId: string,
+  ): Promise<{ favorited: boolean }> {
     const existing = await this.prisma.favorite.findUnique({
       where: { userId_providerId: { userId, providerId } },
     });
@@ -27,7 +30,9 @@ export class PrismaFavoriteRepository implements IFavoriteRepository {
       include: {
         provider: {
           include: {
-            user: { select: { id: true, name: true, avatar: true, location: true } },
+            user: {
+              select: { id: true, name: true, avatar: true, location: true },
+            },
             category: true,
           },
         },
@@ -48,4 +53,3 @@ export class PrismaFavoriteRepository implements IFavoriteRepository {
     return this.prisma.favorite.count({ where: { providerId } });
   }
 }
-

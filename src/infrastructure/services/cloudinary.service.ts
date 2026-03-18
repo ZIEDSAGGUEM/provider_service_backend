@@ -42,4 +42,3 @@ export class CloudinaryService {
     await cloudinary.uploader.destroy(publicId);
   }
 }
-

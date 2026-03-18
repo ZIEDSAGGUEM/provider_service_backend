@@ -8,4 +8,3 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
   providers: [AdminService, PrismaService],
 })
 export class AdminModule {}
-

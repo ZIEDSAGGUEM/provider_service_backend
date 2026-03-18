@@ -27,4 +27,3 @@ export class ReviewResponseDto {
     this.client = review.client;
   }
 }
-

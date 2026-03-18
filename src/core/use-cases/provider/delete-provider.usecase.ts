@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../repositories/category.repository.interface';
 
@@ -18,7 +23,9 @@ export class DeleteProviderUseCase {
     }
 
     if (provider.userId !== userId) {
-      throw new ForbiddenException('You can only delete your own provider profile');
+      throw new ForbiddenException(
+        'You can only delete your own provider profile',
+      );
     }
 
     await this.providerRepository.delete(id);

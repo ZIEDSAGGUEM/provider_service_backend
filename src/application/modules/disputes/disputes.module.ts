@@ -10,4 +10,3 @@ import { EventsModule } from '../../gateways/events.module';
   providers: [DisputesService, PrismaService],
 })
 export class DisputesModule {}
-

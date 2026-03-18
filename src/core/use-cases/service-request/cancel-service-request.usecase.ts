@@ -1,14 +1,28 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import type { IServiceRequestRepository } from '../../repositories/service-request.repository.interface';
-import { ServiceRequestEntity, RequestStatus } from '../../entities/service-request.entity';
+import {
+  ServiceRequestEntity,
+  RequestStatus,
+} from '../../entities/service-request.entity';
 
 @Injectable()
 export class CancelServiceRequestUseCase {
   constructor(
-    @Inject('IServiceRequestRepository') private readonly requestRepository: IServiceRequestRepository,
+    @Inject('IServiceRequestRepository')
+    private readonly requestRepository: IServiceRequestRepository,
   ) {}
 
-  async execute(requestId: string, userId: string, reason?: string): Promise<ServiceRequestEntity> {
+  async execute(
+    requestId: string,
+    userId: string,
+    reason?: string,
+  ): Promise<ServiceRequestEntity> {
     const request = await this.requestRepository.findById(requestId);
 
     if (!request) {
@@ -30,7 +44,9 @@ export class CancelServiceRequestUseCase {
     }
 
     if (request.status === RequestStatus.IN_PROGRESS) {
-      throw new BadRequestException('Cannot cancel a request that is in progress. Please contact the provider.');
+      throw new BadRequestException(
+        'Cannot cancel a request that is in progress. Please contact the provider.',
+      );
     }
 
     // Update request to cancelled
@@ -41,4 +57,3 @@ export class CancelServiceRequestUseCase {
     });
   }
 }
-

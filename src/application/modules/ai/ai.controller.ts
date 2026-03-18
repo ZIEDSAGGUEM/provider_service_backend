@@ -32,4 +32,3 @@ export class AiController {
     return this.aiAppService.chat(dto.messages);
   }
 }
-

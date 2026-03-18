@@ -44,7 +44,9 @@ export class ProvidersController {
   @Get('me')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.PROVIDER)
-  async getMyProvider(@CurrentUser() user: UserEntity): Promise<ProviderResponseDto> {
+  async getMyProvider(
+    @CurrentUser() user: UserEntity,
+  ): Promise<ProviderResponseDto> {
     return this.providersService.getMyProvider(user.id);
   }
 
@@ -56,7 +58,9 @@ export class ProvidersController {
   }
 
   @Get()
-  async searchProviders(@Query() dto: SearchProvidersDto): Promise<ProviderResponseDto[]> {
+  async searchProviders(
+    @Query() dto: SearchProvidersDto,
+  ): Promise<ProviderResponseDto[]> {
     return this.providersService.searchProviders(dto);
   }
 
@@ -80,7 +84,10 @@ export class ProvidersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.PROVIDER)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteProvider(@Param('id') id: string, @CurrentUser() user: UserEntity): Promise<void> {
+  async deleteProvider(
+    @Param('id') id: string,
+    @CurrentUser() user: UserEntity,
+  ): Promise<void> {
     await this.providersService.deleteProvider(id, user.id);
   }
 }

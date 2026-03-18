@@ -10,4 +10,3 @@ export class SendMessageDto {
   @MaxLength(2000)
   content: string;
 }
-

@@ -7,34 +7,34 @@ export class ServiceRequestEntity {
   clientId: string;
   providerId: string;
   categoryId: string;
-  
+
   // Request details
   title: string;
   description: string;
   location?: string | null;
-  
+
   // Scheduling
   preferredDate: Date;
   preferredTime: string;
   scheduledDate?: Date | null;
-  
+
   // Financials
   estimatedBudget?: number | null;
   finalPrice?: number | null;
-  
+
   // Status tracking
   status: RequestStatus;
   cancelledBy?: string | null;
   cancelReason?: string | null;
-  
+
   // Lifecycle timestamps
   startedAt?: Date | null;
   completedAt?: Date | null;
   completionNotes?: string | null;
-  
+
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations (populated by repository)
   client?: any;
   provider?: any;
@@ -44,4 +44,3 @@ export class ServiceRequestEntity {
     Object.assign(this, data);
   }
 }
-

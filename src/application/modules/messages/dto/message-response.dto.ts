@@ -48,4 +48,3 @@ export class ConversationSummaryDto {
     this.unreadCount = conv.unreadCount;
   }
 }
-

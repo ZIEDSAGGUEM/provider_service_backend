@@ -6,7 +6,10 @@ import type {
   UpdateProviderDto,
   ProviderSearchFilters,
 } from '../../../core/repositories/provider.repository.interface';
-import { ProviderEntity, ProviderStatus } from '../../../core/entities/provider.entity';
+import {
+  ProviderEntity,
+  ProviderStatus,
+} from '../../../core/entities/provider.entity';
 import { AvailabilityStatus } from '@prisma/client';
 
 @Injectable()
@@ -21,7 +24,8 @@ export class PrismaProviderRepository implements IProviderRepository {
         bio: data.bio,
         hourlyRate: data.hourlyRate,
         skills: data.skills,
-        availability: (data.availability as any) || AvailabilityStatus.AVAILABLE,
+        availability:
+          (data.availability as any) || AvailabilityStatus.AVAILABLE,
         availabilitySchedule: data.availabilitySchedule as any,
         yearsExperience: data.yearsExperience || 0,
         serviceRadius: data.serviceRadius || 10,
@@ -142,10 +146,7 @@ export class PrismaProviderRepository implements IProviderRepository {
         },
         category: true,
       },
-      orderBy: [
-        { rating: 'desc' },
-        { reviewCount: 'desc' },
-      ],
+      orderBy: [{ rating: 'desc' }, { reviewCount: 'desc' }],
     });
 
     return providers.map((p) => new ProviderEntity(p as any));
@@ -158,13 +159,19 @@ export class PrismaProviderRepository implements IProviderRepository {
     if (data.bio !== undefined) updateData.bio = data.bio;
     if (data.hourlyRate !== undefined) updateData.hourlyRate = data.hourlyRate;
     if (data.skills !== undefined) updateData.skills = data.skills;
-    if (data.availability !== undefined) updateData.availability = data.availability as any;
-    if (data.availabilitySchedule !== undefined) updateData.availabilitySchedule = data.availabilitySchedule as any;
-    if (data.yearsExperience !== undefined) updateData.yearsExperience = data.yearsExperience;
-    if (data.responseTime !== undefined) updateData.responseTime = data.responseTime;
-    if (data.serviceRadius !== undefined) updateData.serviceRadius = data.serviceRadius;
+    if (data.availability !== undefined)
+      updateData.availability = data.availability as any;
+    if (data.availabilitySchedule !== undefined)
+      updateData.availabilitySchedule = data.availabilitySchedule as any;
+    if (data.yearsExperience !== undefined)
+      updateData.yearsExperience = data.yearsExperience;
+    if (data.responseTime !== undefined)
+      updateData.responseTime = data.responseTime;
+    if (data.serviceRadius !== undefined)
+      updateData.serviceRadius = data.serviceRadius;
     if (data.portfolio !== undefined) updateData.portfolio = data.portfolio;
-    if (data.certifications !== undefined) updateData.certifications = data.certifications;
+    if (data.certifications !== undefined)
+      updateData.certifications = data.certifications;
     if (data.status !== undefined) updateData.status = data.status as any;
     if (data.verified !== undefined) updateData.verified = data.verified;
 
@@ -186,7 +193,11 @@ export class PrismaProviderRepository implements IProviderRepository {
     });
   }
 
-  async updateRating(id: string, rating: number, reviewCount: number): Promise<ProviderEntity> {
+  async updateRating(
+    id: string,
+    rating: number,
+    reviewCount: number,
+  ): Promise<ProviderEntity> {
     const provider = await this.prisma.provider.update({
       where: { id },
       data: {
@@ -219,4 +230,3 @@ export class PrismaProviderRepository implements IProviderRepository {
     return new ProviderEntity(provider as any);
   }
 }
-

@@ -10,4 +10,3 @@ export class CompleteServiceRequestDto {
   @Min(0)
   finalPrice?: number;
 }
-

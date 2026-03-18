@@ -26,6 +26,10 @@ export class PrismaUserRepository implements IUserRepository {
       verificationTokenExpiry: user.verificationTokenExpiry,
       passwordResetToken: user.passwordResetToken,
       passwordResetTokenExpiry: user.passwordResetTokenExpiry,
+      settings: user.settings as Record<string, any> | null,
+      failedLoginAttempts: user.failedLoginAttempts,
+      lockedUntil: user.lockedUntil,
+      refreshToken: user.refreshToken,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });

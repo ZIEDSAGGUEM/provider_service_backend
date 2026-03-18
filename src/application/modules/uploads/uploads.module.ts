@@ -13,4 +13,3 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
   exports: [CloudinaryService],
 })
 export class UploadsModule {}
-

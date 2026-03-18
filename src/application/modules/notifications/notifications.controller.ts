@@ -30,10 +30,7 @@ export class NotificationsController {
 
   @Put(':id/read')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async markAsRead(
-    @CurrentUser() user: UserEntity,
-    @Param('id') id: string,
-  ) {
+  async markAsRead(@CurrentUser() user: UserEntity, @Param('id') id: string) {
     await this.notificationsService.markAsRead(id, user.id);
   }
 
@@ -43,4 +40,3 @@ export class NotificationsController {
     await this.notificationsService.markAllAsRead(user.id);
   }
 }
-

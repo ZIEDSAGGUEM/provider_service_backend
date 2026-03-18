@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsString, IsOptional, IsNumber, IsDateString, MinLength, MaxLength, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  MinLength,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateServiceRequestDto {
   @IsNotEmpty()
@@ -38,4 +47,3 @@ export class CreateServiceRequestDto {
   @Min(0, { message: 'Budget must be a positive number' })
   estimatedBudget?: number;
 }
-

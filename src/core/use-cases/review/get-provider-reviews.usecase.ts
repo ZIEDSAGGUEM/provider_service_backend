@@ -12,4 +12,3 @@ export class GetProviderReviewsUseCase {
     return this.reviewRepository.findByProviderId(providerId);
   }
 }
-

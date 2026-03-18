@@ -1,5 +1,13 @@
-import { Injectable, Inject, BadRequestException, NotFoundException } from '@nestjs/common';
-import type { IServiceRequestRepository, CreateServiceRequestDto } from '../../repositories/service-request.repository.interface';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import type {
+  IServiceRequestRepository,
+  CreateServiceRequestDto,
+} from '../../repositories/service-request.repository.interface';
 import type { IUserRepository } from '../../repositories/user.repository.interface';
 import type { IProviderRepository } from '../../repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../repositories/category.repository.interface';
@@ -10,13 +18,19 @@ import { ProviderStatus } from '../../entities/provider.entity';
 @Injectable()
 export class CreateServiceRequestUseCase {
   constructor(
-    @Inject('IServiceRequestRepository') private readonly requestRepository: IServiceRequestRepository,
+    @Inject('IServiceRequestRepository')
+    private readonly requestRepository: IServiceRequestRepository,
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-    @Inject('IProviderRepository') private readonly providerRepository: IProviderRepository,
-    @Inject('ICategoryRepository') private readonly categoryRepository: ICategoryRepository,
+    @Inject('IProviderRepository')
+    private readonly providerRepository: IProviderRepository,
+    @Inject('ICategoryRepository')
+    private readonly categoryRepository: ICategoryRepository,
   ) {}
 
-  async execute(clientId: string, data: Omit<CreateServiceRequestDto, 'clientId'>): Promise<ServiceRequestEntity> {
+  async execute(
+    clientId: string,
+    data: Omit<CreateServiceRequestDto, 'clientId'>,
+  ): Promise<ServiceRequestEntity> {
     // Validate client exists and is a CLIENT role
     const client = await this.userRepository.findById(clientId);
     if (!client) {
@@ -32,7 +46,9 @@ export class CreateServiceRequestUseCase {
       throw new NotFoundException('Provider not found');
     }
     if (provider.status !== ProviderStatus.ACTIVE) {
-      throw new BadRequestException('Provider is not currently accepting requests');
+      throw new BadRequestException(
+        'Provider is not currently accepting requests',
+      );
     }
 
     // Validate category exists
@@ -43,7 +59,9 @@ export class CreateServiceRequestUseCase {
 
     // Validate that provider offers this category
     if (provider.categoryId !== data.categoryId) {
-      throw new BadRequestException('Provider does not offer services in this category');
+      throw new BadRequestException(
+        'Provider does not offer services in this category',
+      );
     }
 
     // Validate preferred date is in the future
@@ -60,4 +78,3 @@ export class CreateServiceRequestUseCase {
     });
   }
 }
-

@@ -5,4 +5,3 @@ export class RequestPasswordResetDto {
   @IsNotEmpty()
   email: string;
 }
-

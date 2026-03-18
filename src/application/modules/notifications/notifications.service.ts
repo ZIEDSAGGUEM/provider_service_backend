@@ -1,5 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { INotificationRepository, CreateNotificationDto } from '../../../core/repositories/notification.repository.interface';
+import type {
+  INotificationRepository,
+  CreateNotificationDto,
+} from '../../../core/repositories/notification.repository.interface';
 import { NotificationEntity } from '../../../core/entities/notification.entity';
 
 @Injectable()
@@ -29,4 +32,3 @@ export class NotificationsService {
     return this.notificationRepository.getUnreadCount(userId);
   }
 }
-

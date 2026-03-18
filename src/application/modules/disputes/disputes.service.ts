@@ -17,19 +17,28 @@ export class DisputesService {
   ) {}
 
   // ── Client: Create Dispute ──
-  async create(userId: string, data: { requestId: string; reason: string; evidence?: string[] }) {
+  async create(
+    userId: string,
+    data: { requestId: string; reason: string; evidence?: string[] },
+  ) {
     const request = await this.prisma.serviceRequest.findUnique({
       where: { id: data.requestId },
       include: { provider: { include: { user: true } } },
     });
     if (!request) throw new NotFoundException('Service request not found');
-    if (request.clientId !== userId) throw new ForbiddenException('Not your request');
+    if (request.clientId !== userId)
+      throw new ForbiddenException('Not your request');
     if (!['COMPLETED', 'IN_PROGRESS'].includes(request.status)) {
-      throw new BadRequestException('Can only dispute completed or in-progress requests');
+      throw new BadRequestException(
+        'Can only dispute completed or in-progress requests',
+      );
     }
 
-    const existing = await this.prisma.dispute.findUnique({ where: { requestId: data.requestId } });
-    if (existing) throw new BadRequestException('Dispute already exists for this request');
+    const existing = await this.prisma.dispute.findUnique({
+      where: { requestId: data.requestId },
+    });
+    if (existing)
+      throw new BadRequestException('Dispute already exists for this request');
 
     const dispute = await this.prisma.dispute.create({
       data: {
@@ -68,7 +77,9 @@ export class DisputesService {
             id: true,
             title: true,
             provider: {
-              include: { user: { select: { id: true, name: true, avatar: true } } },
+              include: {
+                user: { select: { id: true, name: true, avatar: true } },
+              },
             },
           },
         },
@@ -80,7 +91,9 @@ export class DisputesService {
 
   // ── Provider: Get disputes against me ──
   async getProviderDisputes(userId: string) {
-    const provider = await this.prisma.provider.findUnique({ where: { userId } });
+    const provider = await this.prisma.provider.findUnique({
+      where: { userId },
+    });
     if (!provider) throw new NotFoundException('Provider not found');
 
     return this.prisma.dispute.findMany({
@@ -106,7 +119,9 @@ export class DisputesService {
     disputeId: string,
     data: { providerResponse: string; providerEvidence?: string[] },
   ) {
-    const provider = await this.prisma.provider.findUnique({ where: { userId } });
+    const provider = await this.prisma.provider.findUnique({
+      where: { userId },
+    });
     if (!provider) throw new NotFoundException('Provider not found');
 
     const dispute = await this.prisma.dispute.findUnique({
@@ -114,8 +129,10 @@ export class DisputesService {
       include: { request: true },
     });
     if (!dispute) throw new NotFoundException('Dispute not found');
-    if (dispute.request.providerId !== provider.id) throw new ForbiddenException('Not your dispute');
-    if (dispute.status === 'RESOLVED') throw new BadRequestException('Dispute already resolved');
+    if (dispute.request.providerId !== provider.id)
+      throw new ForbiddenException('Not your dispute');
+    if (dispute.status === 'RESOLVED')
+      throw new BadRequestException('Dispute already resolved');
 
     const updated = await this.prisma.dispute.update({
       where: { id: disputeId },
@@ -155,7 +172,9 @@ export class DisputesService {
             status: true,
             client: { select: { id: true, name: true, avatar: true } },
             provider: {
-              include: { user: { select: { id: true, name: true, avatar: true } } },
+              include: {
+                user: { select: { id: true, name: true, avatar: true } },
+              },
             },
           },
         },
@@ -170,7 +189,10 @@ export class DisputesService {
   async resolve(
     adminId: string,
     disputeId: string,
-    data: { resolution: 'CLIENT_FAVORED' | 'PROVIDER_FAVORED' | 'COMPROMISE'; adminNote?: string },
+    data: {
+      resolution: 'CLIENT_FAVORED' | 'PROVIDER_FAVORED' | 'COMPROMISE';
+      adminNote?: string;
+    },
   ) {
     const dispute = await this.prisma.dispute.findUnique({
       where: { id: disputeId },
@@ -179,7 +201,8 @@ export class DisputesService {
       },
     });
     if (!dispute) throw new NotFoundException('Dispute not found');
-    if (dispute.status === 'RESOLVED') throw new BadRequestException('Already resolved');
+    if (dispute.status === 'RESOLVED')
+      throw new BadRequestException('Already resolved');
 
     const updated = await this.prisma.dispute.update({
       where: { id: disputeId },
@@ -222,9 +245,11 @@ export class DisputesService {
       body: `The dispute for "${dispute.request.title}" was resolved ${providerResLabel}.`,
       data: { disputeId: dispute.id, resolution: data.resolution },
     });
-    this.eventsGateway.emitNotification(dispute.request.provider.userId, providerNotif);
+    this.eventsGateway.emitNotification(
+      dispute.request.provider.userId,
+      providerNotif,
+    );
 
     return updated;
   }
 }
-

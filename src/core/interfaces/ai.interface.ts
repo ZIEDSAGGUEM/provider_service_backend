@@ -14,4 +14,3 @@ export interface IAiService {
     systemPrompt: string,
   ): Promise<AiChatResponse>;
 }
-
