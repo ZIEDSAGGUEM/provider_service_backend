@@ -16,6 +16,7 @@ import { CreateServiceRequestDto } from './dto/create-service-request.dto';
 import { CompleteServiceRequestDto } from './dto/complete-service-request.dto';
 import { NotificationsService } from '../notifications/notifications.service';
 import { EventsGateway } from '../../gateways/events.gateway';
+import type { NotificationType } from '../../../core/entities/notification.entity';
 
 @Injectable()
 export class ServiceRequestsService {
@@ -51,7 +52,7 @@ export class ServiceRequestsService {
     // Notify provider of new request
     const providerUserId = request.provider?.userId;
     if (providerUserId) {
-      this.notify(
+      void this.notify(
         providerUserId,
         'REQUEST_NEW',
         'New Service Request',
@@ -101,7 +102,7 @@ export class ServiceRequestsService {
     );
     const targetUserId = request.provider?.userId;
     if (targetUserId) {
-      this.notify(
+      void this.notify(
         targetUserId,
         'REQUEST_CANCELLED',
         'Request Cancelled',
@@ -119,7 +120,7 @@ export class ServiceRequestsService {
       requestId,
       userId,
     );
-    this.notify(
+    void this.notify(
       request.clientId,
       'REQUEST_ACCEPTED',
       'Request Accepted',
@@ -138,7 +139,7 @@ export class ServiceRequestsService {
       userId,
       reason,
     );
-    this.notify(
+    void this.notify(
       request.clientId,
       'REQUEST_DECLINED',
       'Request Declined',
@@ -155,7 +156,7 @@ export class ServiceRequestsService {
       requestId,
       userId,
     );
-    this.notify(
+    void this.notify(
       request.clientId,
       'REQUEST_STARTED',
       'Job Started',
@@ -177,7 +178,7 @@ export class ServiceRequestsService {
         finalPrice: dto.finalPrice,
       },
     );
-    this.notify(
+    void this.notify(
       request.clientId,
       'REQUEST_COMPLETED',
       'Job Completed',
@@ -186,7 +187,12 @@ export class ServiceRequestsService {
     return request;
   }
 
-  private async notify(userId: string, type: any, title: string, body: string) {
+  private async notify(
+    userId: string,
+    type: NotificationType,
+    title: string,
+    body: string,
+  ) {
     if (!this.notificationsService) return;
     try {
       const notification = await this.notificationsService.create({
@@ -196,6 +202,8 @@ export class ServiceRequestsService {
         body,
       });
       this.eventsGateway?.emitNotification(userId, notification);
-    } catch {}
+    } catch {
+      // notification delivery is best-effort
+    }
   }
 }

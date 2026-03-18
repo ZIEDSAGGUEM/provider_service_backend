@@ -39,7 +39,9 @@ export class PrismaFavoriteRepository implements IFavoriteRepository {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return favorites.map((f) => new FavoriteEntity(f as any));
+    return favorites.map(
+      (f) => new FavoriteEntity(f as unknown as Partial<FavoriteEntity>),
+    );
   }
 
   async isFavorited(userId: string, providerId: string): Promise<boolean> {

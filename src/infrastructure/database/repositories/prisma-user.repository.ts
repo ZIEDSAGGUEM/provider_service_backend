@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import {
   IUserRepository,
@@ -7,11 +8,15 @@ import {
 } from '../../../core/repositories/user.repository.interface';
 import { UserEntity, UserRole } from '../../../core/entities/user.entity';
 
+type PrismaUserWithRelations = Prisma.UserGetPayload<{
+  include: { provider: true };
+}>;
+
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(user: any): UserEntity {
+  private mapToEntity(user: PrismaUserWithRelations): UserEntity {
     return new UserEntity({
       id: user.id,
       email: user.email,

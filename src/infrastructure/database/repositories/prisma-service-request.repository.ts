@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import {
   IServiceRequestRepository,
@@ -11,11 +12,21 @@ import {
   RequestStatus,
 } from '../../../core/entities/service-request.entity';
 
+type PrismaRequestWithRelations = Prisma.ServiceRequestGetPayload<{
+  include: {
+    client: true;
+    provider: { include: { user: true; category: true } };
+    category: true;
+  };
+}>;
+
 @Injectable()
 export class PrismaServiceRequestRepository implements IServiceRequestRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(request: any): ServiceRequestEntity {
+  private mapToEntity(
+    request: PrismaRequestWithRelations,
+  ): ServiceRequestEntity {
     return new ServiceRequestEntity({
       id: request.id,
       clientId: request.clientId,
@@ -29,7 +40,7 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
       scheduledDate: request.scheduledDate,
       estimatedBudget: request.estimatedBudget,
       finalPrice: request.finalPrice,
-      status: request.status as RequestStatus,
+      status: request.status,
       cancelledBy: request.cancelledBy,
       cancelReason: request.cancelReason,
       startedAt: request.startedAt,
@@ -134,7 +145,7 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
   async findAll(
     filters?: ServiceRequestFilters,
   ): Promise<ServiceRequestEntity[]> {
-    const where: any = {};
+    const where: Prisma.ServiceRequestWhereInput = {};
 
     if (filters?.clientId) where.clientId = filters.clientId;
     if (filters?.providerId) where.providerId = filters.providerId;
@@ -142,9 +153,10 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
     if (filters?.status) where.status = filters.status;
 
     if (filters?.fromDate || filters?.toDate) {
-      where.preferredDate = {};
-      if (filters.fromDate) where.preferredDate.gte = filters.fromDate;
-      if (filters.toDate) where.preferredDate.lte = filters.toDate;
+      const preferredDate: Record<string, Date> = {};
+      if (filters?.fromDate) preferredDate.gte = filters.fromDate;
+      if (filters?.toDate) preferredDate.lte = filters.toDate;
+      where.preferredDate = preferredDate;
     }
 
     const requests = await this.prisma.serviceRequest.findMany({
@@ -185,8 +197,7 @@ export class PrismaServiceRequestRepository implements IServiceRequestRepository
     id: string,
     data: UpdateServiceRequestDto,
   ): Promise<ServiceRequestEntity> {
-    // Build update data dynamically to only include defined fields
-    const updateData: any = {};
+    const updateData: Prisma.ServiceRequestUpdateInput = {};
     if (data.title !== undefined) updateData.title = data.title;
     if (data.description !== undefined)
       updateData.description = data.description;

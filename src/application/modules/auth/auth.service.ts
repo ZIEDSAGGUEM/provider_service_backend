@@ -11,7 +11,14 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import type { IUserRepository } from '../../../core/repositories/user.repository.interface';
-import { UserEntity, UserRole } from '../../../core/entities/user.entity';
+import { UserEntity } from '../../../core/entities/user.entity';
+import type { UpdateUserDto } from '../../../core/repositories/user.repository.interface';
+
+function omitPassword(user: UserEntity): UserEntity {
+  const { password, ...rest } = user;
+  void password;
+  return rest as UserEntity;
+}
 import { EmailService } from '../../../infrastructure/services/email.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -171,7 +178,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password!);
     if (!isPasswordValid) {
       const attempts = (user.failedLoginAttempts || 0) + 1;
-      const updateData: any = { failedLoginAttempts: attempts };
+      const updateData: UpdateUserDto = { failedLoginAttempts: attempts };
 
       if (attempts >= AuthService.MAX_LOGIN_ATTEMPTS) {
         updateData.lockedUntil = new Date(
@@ -206,10 +213,8 @@ export class AuthService {
       refreshToken: hashedRefreshToken,
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-
     return {
-      user: userWithoutPassword as UserEntity,
+      user: omitPassword(user),
       accessToken,
       refreshToken,
     };
@@ -223,7 +228,7 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token is required');
     }
 
-    let payload: any;
+    let payload: { sub: string };
     try {
       payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('JWT_SECRET') + '-refresh',
@@ -252,10 +257,8 @@ export class AuthService {
       refreshToken: hashedNewRefreshToken,
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-
     return {
-      user: userWithoutPassword as UserEntity,
+      user: omitPassword(user),
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     };
@@ -271,10 +274,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
-    return userWithoutPassword as UserEntity;
+    return omitPassword(user);
   }
 
   /**
@@ -367,8 +367,7 @@ export class AuthService {
       ...(dto.location !== undefined && { location: dto.location }),
     });
 
-    const { password: _, ...userWithoutPassword } = updated;
-    return userWithoutPassword as UserEntity;
+    return omitPassword(updated);
   }
 
   /**
@@ -417,7 +416,7 @@ export class AuthService {
       showAvailability: true,
     };
 
-    const stored = (user as any).settings || {};
+    const stored = (user.settings ?? {}) as Record<string, unknown>;
     return { ...defaults, ...stored };
   }
 
@@ -433,8 +432,8 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    const currentSettings = (user as any).settings || {};
-    const newSettings = { ...currentSettings };
+    const currentSettings = (user.settings ?? {}) as Record<string, unknown>;
+    const newSettings: Record<string, unknown> = { ...currentSettings };
 
     for (const [key, value] of Object.entries(dto)) {
       if (value !== undefined) {
@@ -442,7 +441,9 @@ export class AuthService {
       }
     }
 
-    await this.userRepository.update(userId, { settings: newSettings } as any);
+    await this.userRepository.update(userId, {
+      settings: newSettings as Record<string, any>,
+    });
     return newSettings;
   }
 

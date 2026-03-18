@@ -75,7 +75,7 @@ export class AuthController {
   @Get('me')
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@CurrentUser() user: UserEntity): Promise<UserEntity> {
+  getCurrentUser(@CurrentUser() user: UserEntity): UserEntity {
     return user;
   }
 

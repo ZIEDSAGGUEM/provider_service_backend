@@ -7,11 +7,27 @@ import {
 } from '../../../core/repositories/message.repository.interface';
 import { MessageEntity } from '../../../core/entities/message.entity';
 
+interface PrismaMessageRow {
+  id: string;
+  senderId: string;
+  requestId: string;
+  content: string;
+  read: boolean;
+  createdAt: Date;
+  sender?: { id: string; name: string; avatar: string | null } | null;
+  request?: {
+    id: string;
+    title: string;
+    clientId: string;
+    providerId: string;
+  } | null;
+}
+
 @Injectable()
 export class PrismaMessageRepository implements IMessageRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(message: any): MessageEntity {
+  private mapToEntity(message: PrismaMessageRow): MessageEntity {
     return new MessageEntity({
       id: message.id,
       senderId: message.senderId,

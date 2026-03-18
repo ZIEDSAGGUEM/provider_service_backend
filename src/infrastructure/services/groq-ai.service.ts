@@ -57,8 +57,10 @@ export class GroqAiService implements IAiService {
         message: parsed.message || 'Sorry, I could not process your request.',
         recommendedProviderIds: parsed.recommendedProviderIds || [],
       };
-    } catch (error: any) {
-      this.logger.error(`Groq API error: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Groq API error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
 
       // Graceful fallback
       return {

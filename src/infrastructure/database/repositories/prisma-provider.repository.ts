@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma, AvailabilityStatus } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import type {
   IProviderRepository,
@@ -6,11 +7,7 @@ import type {
   UpdateProviderDto,
   ProviderSearchFilters,
 } from '../../../core/repositories/provider.repository.interface';
-import {
-  ProviderEntity,
-  ProviderStatus,
-} from '../../../core/entities/provider.entity';
-import { AvailabilityStatus } from '@prisma/client';
+import { ProviderEntity } from '../../../core/entities/provider.entity';
 
 @Injectable()
 export class PrismaProviderRepository implements IProviderRepository {
@@ -25,8 +22,11 @@ export class PrismaProviderRepository implements IProviderRepository {
         hourlyRate: data.hourlyRate,
         skills: data.skills,
         availability:
-          (data.availability as any) || AvailabilityStatus.AVAILABLE,
-        availabilitySchedule: data.availabilitySchedule as any,
+          (data.availability as AvailabilityStatus) ||
+          AvailabilityStatus.AVAILABLE,
+        availabilitySchedule:
+          (data.availabilitySchedule as Prisma.InputJsonValue) ??
+          Prisma.JsonNull,
         yearsExperience: data.yearsExperience || 0,
         serviceRadius: data.serviceRadius || 10,
         portfolio: data.portfolio || [],
@@ -38,7 +38,7 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return new ProviderEntity(provider as any);
+    return new ProviderEntity(provider as unknown as Partial<ProviderEntity>);
   }
 
   async findById(id: string): Promise<ProviderEntity | null> {
@@ -59,7 +59,9 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return provider ? new ProviderEntity(provider as any) : null;
+    return provider
+      ? new ProviderEntity(provider as unknown as Partial<ProviderEntity>)
+      : null;
   }
 
   async findByUserId(userId: string): Promise<ProviderEntity | null> {
@@ -80,11 +82,13 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return provider ? new ProviderEntity(provider as any) : null;
+    return provider
+      ? new ProviderEntity(provider as unknown as Partial<ProviderEntity>)
+      : null;
   }
 
   async findAll(filters?: ProviderSearchFilters): Promise<ProviderEntity[]> {
-    const where: any = {};
+    const where: Prisma.ProviderWhereInput = {};
 
     if (filters) {
       if (filters.categoryId) {
@@ -100,10 +104,11 @@ export class PrismaProviderRepository implements IProviderRepository {
         where.skills = { hasSome: filters.skills };
       }
       if (filters.availability) {
-        where.availability = filters.availability as any;
+        where.availability = filters.availability as AvailabilityStatus;
       }
       if (filters.status) {
-        where.status = filters.status as any;
+        where.status =
+          filters.status as unknown as Prisma.EnumProviderStatusFilter;
       } else {
         where.status = 'ACTIVE';
       }
@@ -111,15 +116,13 @@ export class PrismaProviderRepository implements IProviderRepository {
         where.verified = filters.verified;
       }
 
-      // Location filter: case-insensitive partial match on user.location
       if (filters.location) {
         where.user = {
-          ...where.user,
+          ...(where.user as Prisma.UserWhereInput),
           location: { contains: filters.location, mode: 'insensitive' },
         };
       }
 
-      // Text search: matches user name, bio, skills, or category name
       if (filters.q) {
         const q = filters.q;
         where.OR = [
@@ -149,20 +152,24 @@ export class PrismaProviderRepository implements IProviderRepository {
       orderBy: [{ rating: 'desc' }, { reviewCount: 'desc' }],
     });
 
-    return providers.map((p) => new ProviderEntity(p as any));
+    return providers.map(
+      (p) => new ProviderEntity(p as unknown as Partial<ProviderEntity>),
+    );
   }
 
   async update(id: string, data: UpdateProviderDto): Promise<ProviderEntity> {
-    const updateData: any = {};
+    const updateData: Prisma.ProviderUpdateInput = {};
 
-    if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+    if (data.categoryId !== undefined)
+      updateData.category = { connect: { id: data.categoryId } };
     if (data.bio !== undefined) updateData.bio = data.bio;
     if (data.hourlyRate !== undefined) updateData.hourlyRate = data.hourlyRate;
     if (data.skills !== undefined) updateData.skills = data.skills;
     if (data.availability !== undefined)
-      updateData.availability = data.availability as any;
+      updateData.availability = data.availability as AvailabilityStatus;
     if (data.availabilitySchedule !== undefined)
-      updateData.availabilitySchedule = data.availabilitySchedule as any;
+      updateData.availabilitySchedule =
+        (data.availabilitySchedule as Prisma.InputJsonValue) ?? Prisma.JsonNull;
     if (data.yearsExperience !== undefined)
       updateData.yearsExperience = data.yearsExperience;
     if (data.responseTime !== undefined)
@@ -172,7 +179,9 @@ export class PrismaProviderRepository implements IProviderRepository {
     if (data.portfolio !== undefined) updateData.portfolio = data.portfolio;
     if (data.certifications !== undefined)
       updateData.certifications = data.certifications;
-    if (data.status !== undefined) updateData.status = data.status as any;
+    if (data.status !== undefined)
+      updateData.status =
+        data.status as Prisma.EnumProviderStatusFieldUpdateOperationsInput['set'];
     if (data.verified !== undefined) updateData.verified = data.verified;
 
     const provider = await this.prisma.provider.update({
@@ -184,7 +193,7 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return new ProviderEntity(provider as any);
+    return new ProviderEntity(provider as unknown as Partial<ProviderEntity>);
   }
 
   async delete(id: string): Promise<void> {
@@ -210,7 +219,7 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return new ProviderEntity(provider as any);
+    return new ProviderEntity(provider as unknown as Partial<ProviderEntity>);
   }
 
   async incrementCompletedJobs(id: string): Promise<ProviderEntity> {
@@ -227,6 +236,6 @@ export class PrismaProviderRepository implements IProviderRepository {
       },
     });
 
-    return new ProviderEntity(provider as any);
+    return new ProviderEntity(provider as unknown as Partial<ProviderEntity>);
   }
 }

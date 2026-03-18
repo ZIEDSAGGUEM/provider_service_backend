@@ -24,9 +24,9 @@ export class ServiceRequestResponseDto {
   completionNotes?: string | null;
   createdAt: Date;
   updatedAt: Date;
-  client?: any;
-  provider?: any;
-  category?: any;
+  client?: ServiceRequestEntity['client'];
+  provider?: ServiceRequestEntity['provider'];
+  category?: ServiceRequestEntity['category'];
 
   constructor(entity: ServiceRequestEntity) {
     this.id = entity.id;

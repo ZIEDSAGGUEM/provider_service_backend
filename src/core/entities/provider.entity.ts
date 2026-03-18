@@ -36,9 +36,20 @@ export class ProviderEntity {
   createdAt: Date;
   updatedAt: Date;
 
-  // Optional relations (populated when needed)
-  user?: any;
-  category?: any;
+  user?: {
+    id: string;
+    name: string;
+    email?: string;
+    avatar?: string | null;
+    phone?: string | null;
+    location?: string | null;
+  } | null;
+  category?: {
+    id: string;
+    name: string;
+    icon: string;
+    description?: string;
+  } | null;
 
   constructor(data: Partial<ProviderEntity>) {
     Object.assign(this, data);

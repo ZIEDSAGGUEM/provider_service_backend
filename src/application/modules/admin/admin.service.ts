@@ -117,7 +117,7 @@ export class AdminService {
 
   // ── Users ──
   async getUsers(query?: string, role?: string) {
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (role) where.role = role;
     if (query) {
       where.OR = [
@@ -151,7 +151,7 @@ export class AdminService {
 
     return this.prisma.user.update({
       where: { id: userId },
-      data: { role: role as any },
+      data: { role: role as 'CLIENT' | 'PROVIDER' | 'ADMIN' },
       select: { id: true, email: true, name: true, role: true, verified: true },
     });
   }
@@ -179,7 +179,7 @@ export class AdminService {
 
   // ── Providers ──
   async getProviders(query?: string, status?: string) {
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (status) where.status = status;
     if (query) {
       where.user = {
@@ -221,7 +221,7 @@ export class AdminService {
 
     return this.prisma.provider.update({
       where: { id: providerId },
-      data: { status: status as any },
+      data: { status: status as 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' },
       select: { id: true, status: true },
     });
   }

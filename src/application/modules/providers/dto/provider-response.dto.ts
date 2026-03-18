@@ -83,7 +83,7 @@ export class ProviderResponseDto {
         id: provider.category.id,
         name: provider.category.name,
         icon: provider.category.icon,
-        description: provider.category.description,
+        description: provider.category.description ?? '',
       };
     }
   }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import type {
   INotificationRepository,
@@ -14,13 +15,16 @@ export class PrismaNotificationRepository implements INotificationRepository {
     const notification = await this.prisma.notification.create({
       data: {
         userId: data.userId,
-        type: data.type as any,
+        type: data.type as Prisma.EnumNotificationTypeFieldUpdateOperationsInput['set'] &
+          string,
         title: data.title,
         body: data.body,
-        data: data.data ?? undefined,
+        data: (data.data as Prisma.InputJsonValue) ?? undefined,
       },
     });
-    return new NotificationEntity(notification as any);
+    return new NotificationEntity(
+      notification as unknown as Partial<NotificationEntity>,
+    );
   }
 
   async findByUser(userId: string, limit = 50): Promise<NotificationEntity[]> {
@@ -29,7 +33,10 @@ export class PrismaNotificationRepository implements INotificationRepository {
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
-    return notifications.map((n) => new NotificationEntity(n as any));
+    return notifications.map(
+      (n) =>
+        new NotificationEntity(n as unknown as Partial<NotificationEntity>),
+    );
   }
 
   async markAsRead(id: string, userId: string): Promise<void> {

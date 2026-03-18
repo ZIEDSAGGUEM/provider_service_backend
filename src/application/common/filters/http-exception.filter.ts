@@ -32,9 +32,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         typeof exceptionResponse === 'object' &&
         exceptionResponse !== null
       ) {
-        const res = exceptionResponse as Record<string, any>;
-        message = res.message || exception.message;
-        error = res.error || error;
+        const res = exceptionResponse as Record<string, unknown>;
+        message = (res.message as string | string[]) || exception.message;
+        error = (res.error as string) || error;
       }
     } else if (exception instanceof Error) {
       message = exception.message;

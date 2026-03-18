@@ -6,11 +6,23 @@ import {
 } from '../../../core/repositories/review.repository.interface';
 import { ReviewEntity } from '../../../core/entities/review.entity';
 
+interface PrismaReviewRow {
+  id: string;
+  requestId: string;
+  clientId: string;
+  providerId: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  client?: { id: string; name: string; avatar: string | null } | null;
+}
+
 @Injectable()
 export class PrismaReviewRepository implements IReviewRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(review: any): ReviewEntity {
+  private mapToEntity(review: PrismaReviewRow): ReviewEntity {
     return new ReviewEntity({
       id: review.id,
       requestId: review.requestId,

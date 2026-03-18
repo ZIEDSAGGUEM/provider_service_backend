@@ -3,7 +3,7 @@ export class FavoriteEntity {
   userId: string;
   providerId: string;
   createdAt: Date;
-  provider?: any;
+  provider?: Record<string, unknown>;
 
   constructor(props: Partial<FavoriteEntity>) {
     Object.assign(this, props);

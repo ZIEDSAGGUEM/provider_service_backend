@@ -158,7 +158,7 @@ export class DisputesService {
 
   // ── Admin: Get all disputes ──
   async getAllDisputes(status?: string) {
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (status) where.status = status;
 
     return this.prisma.dispute.findMany({

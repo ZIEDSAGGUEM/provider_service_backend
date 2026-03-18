@@ -35,10 +35,40 @@ export class ServiceRequestEntity {
   createdAt: Date;
   updatedAt: Date;
 
-  // Relations (populated by repository)
-  client?: any;
-  provider?: any;
-  category?: any;
+  client?: {
+    id: string;
+    name: string;
+    email?: string;
+    avatar?: string | null;
+    phone?: string | null;
+    location?: string | null;
+  } | null;
+  provider?: {
+    id: string;
+    userId: string;
+    categoryId: string;
+    hourlyRate: number;
+    rating: number;
+    reviewCount: number;
+    user?: {
+      id: string;
+      name: string;
+      avatar?: string | null;
+      phone?: string | null;
+      location?: string | null;
+    } | null;
+    category?: {
+      id: string;
+      name: string;
+      icon: string;
+    } | null;
+  } | null;
+  category?: {
+    id: string;
+    name: string;
+    icon: string;
+    description?: string;
+  } | null;
 
   constructor(data: Partial<ServiceRequestEntity>) {
     Object.assign(this, data);

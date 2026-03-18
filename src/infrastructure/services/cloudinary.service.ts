@@ -29,7 +29,7 @@ export class CloudinaryService {
         (error, result) => {
           if (error) {
             this.logger.error('Cloudinary upload failed', error);
-            return reject(error);
+            return reject(new Error(error.message));
           }
           resolve(result!);
         },

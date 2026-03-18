@@ -6,6 +6,8 @@ import type {
 import type { IProviderRepository } from '../../../core/repositories/provider.repository.interface';
 import type { ICategoryRepository } from '../../../core/repositories/category.repository.interface';
 import { AiChatResponseDto } from './dto/chat.dto';
+import { ProviderEntity } from '../../../core/entities/provider.entity';
+import { CategoryEntity } from '../../../core/entities/category.entity';
 
 @Injectable()
 export class AiAppService {
@@ -37,20 +39,25 @@ export class AiAppService {
     const aiResponse = await this.aiService.chat(messages, systemPrompt);
 
     // 4. Fetch full provider data for any recommended IDs
-    let recommendedProviders: any[] = [];
+    let recommendedProviders: ProviderEntity[] = [];
     if (aiResponse.recommendedProviderIds.length > 0) {
       const fullProviders = await Promise.all(
         aiResponse.recommendedProviderIds.map((id) =>
           this.providerRepository.findById(id).catch(() => null),
         ),
       );
-      recommendedProviders = fullProviders.filter(Boolean);
+      recommendedProviders = fullProviders.filter(
+        (p): p is ProviderEntity => p !== null,
+      );
     }
 
     return new AiChatResponseDto(aiResponse.message, recommendedProviders);
   }
 
-  private buildSystemPrompt(categories: any[], providers: any[]): string {
+  private buildSystemPrompt(
+    categories: CategoryEntity[],
+    providers: ProviderEntity[],
+  ): string {
     const categoryList = categories
       .map((c) => `- ${c.name} (id: ${c.id}): ${c.description}`)
       .join('\n');
