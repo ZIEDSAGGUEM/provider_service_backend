@@ -8,6 +8,10 @@ export interface AiChatResponse {
   recommendedProviderIds: string[];
 }
 
+
+
+
+
 export interface IAiService {
   chat(
     messages: AiChatMessage[],

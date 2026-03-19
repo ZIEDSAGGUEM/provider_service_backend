@@ -1,5 +1,9 @@
 import { IsEmail, IsString, MinLength, IsEnum } from 'class-validator';
-import { UserRole } from '../../../../core/entities/user.entity';
+
+enum AllowedRegistrationRole {
+  CLIENT = 'CLIENT',
+  PROVIDER = 'PROVIDER',
+}
 
 export class RegisterDto {
   @IsEmail()
@@ -13,6 +17,6 @@ export class RegisterDto {
   @MinLength(2)
   name: string;
 
-  @IsEnum(UserRole)
-  role: UserRole;
+  @IsEnum(AllowedRegistrationRole, { message: 'Role must be CLIENT or PROVIDER' })
+  role: AllowedRegistrationRole;
 }

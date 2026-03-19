@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -16,22 +17,23 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole, UserEntity } from '../../../core/entities/user.entity';
 import { DisputesService } from './disputes.service';
+import { CreateDisputeDto } from './dto/create-dispute.dto';
+import { RespondDisputeDto } from './dto/respond-dispute.dto';
+import { ResolveDisputeDto } from './dto/resolve-dispute.dto';
 
 @Controller('disputes')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class DisputesController {
   constructor(private readonly disputesService: DisputesService) {}
 
-  // ── Client ──
-
   @Post()
   @Roles(UserRole.CLIENT)
   @HttpCode(HttpStatus.CREATED)
   async create(
     @CurrentUser() user: UserEntity,
-    @Body() body: { requestId: string; reason: string; evidence?: string[] },
+    @Body() dto: CreateDisputeDto,
   ) {
-    return this.disputesService.create(user.id, body);
+    return this.disputesService.create(user.id, dto);
   }
 
   @Get('my')
@@ -39,8 +41,6 @@ export class DisputesController {
   async getClientDisputes(@CurrentUser() user: UserEntity) {
     return this.disputesService.getClientDisputes(user.id);
   }
-
-  // ── Provider ──
 
   @Get('provider')
   @Roles(UserRole.PROVIDER)
@@ -52,13 +52,11 @@ export class DisputesController {
   @Roles(UserRole.PROVIDER)
   async providerRespond(
     @CurrentUser() user: UserEntity,
-    @Param('id') id: string,
-    @Body() body: { providerResponse: string; providerEvidence?: string[] },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: RespondDisputeDto,
   ) {
-    return this.disputesService.providerRespond(user.id, id, body);
+    return this.disputesService.providerRespond(user.id, id, dto);
   }
-
-  // ── Admin ──
 
   @Get('admin')
   @Roles(UserRole.ADMIN)
@@ -70,13 +68,9 @@ export class DisputesController {
   @Roles(UserRole.ADMIN)
   async resolve(
     @CurrentUser() user: UserEntity,
-    @Param('id') id: string,
-    @Body()
-    body: {
-      resolution: 'CLIENT_FAVORED' | 'PROVIDER_FAVORED' | 'COMPROMISE';
-      adminNote?: string;
-    },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: ResolveDisputeDto,
   ) {
-    return this.disputesService.resolve(user.id, id, body);
+    return this.disputesService.resolve(user.id, id, dto);
   }
 }

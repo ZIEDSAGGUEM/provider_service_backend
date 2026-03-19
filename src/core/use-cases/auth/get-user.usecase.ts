@@ -16,6 +16,7 @@ export class GetUserUseCase {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    const { password: _, refreshToken: _rt, verificationToken: _vt, passwordResetToken: _prt, ...safeUser } = user;
+    return safeUser as UserEntity;
   }
 }

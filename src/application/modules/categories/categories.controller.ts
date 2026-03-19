@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoryEntity } from '../../../core/entities/category.entity';
 
@@ -12,7 +12,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  async getCategoryById(@Param('id') id: string): Promise<CategoryEntity> {
+  async getCategoryById(@Param('id', ParseUUIDPipe) id: string): Promise<CategoryEntity> {
     return this.categoriesService.getCategoryById(id);
   }
 }

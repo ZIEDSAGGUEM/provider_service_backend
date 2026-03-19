@@ -64,6 +64,8 @@ model User {
   raisedDisputes   Dispute[]      @relation("RaisedDisputes")
   resolvedDisputes Dispute[]      @relation("ResolvedDisputes")
 
+  @@index([role])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -99,6 +101,9 @@ model Provider {
   reviews             Review[]
   favorites           Favorite[]
 
+  @@index([categoryId])
+  @@index([status])
+  @@index([rating])
   @@map("providers")
 }
 
@@ -162,6 +167,10 @@ model ServiceRequest {
   review      Review?
   dispute     Dispute?
 
+  @@index([clientId])
+  @@index([providerId])
+  @@index([status])
+  @@index([createdAt])
   @@map("service_requests")
 }
 
@@ -183,6 +192,8 @@ model Review {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@index([clientId])
+  @@index([providerId])
   @@map("reviews")
 }
 
@@ -200,6 +211,9 @@ model Message {
   
   createdAt DateTime       @default(now())
 
+  @@index([requestId])
+  @@index([senderId])
+  @@index([createdAt])
   @@map("messages")
 }
 
@@ -258,6 +272,9 @@ model Notification {
   
   createdAt DateTime         @default(now())
 
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
   @@map("notifications")
 }
 

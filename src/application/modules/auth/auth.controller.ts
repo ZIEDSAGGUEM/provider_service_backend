@@ -25,6 +25,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -66,10 +68,8 @@ export class AuthController {
   @Post('refresh')
   @Throttle({ short: { ttl: 60000, limit: 10 } })
   @HttpCode(HttpStatus.OK)
-  async refreshToken(
-    @Body() body: { refreshToken: string },
-  ): Promise<AuthResponseDto> {
-    return this.authService.refreshAccessToken(body.refreshToken);
+  async refreshToken(@Body() dto: RefreshTokenDto): Promise<AuthResponseDto> {
+    return this.authService.refreshAccessToken(dto.refreshToken);
   }
 
   @Get('me')
@@ -120,7 +120,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async getSettings(
     @CurrentUser() user: UserEntity,
-  ): Promise<Record<string, any>> {
+  ): Promise<Record<string, unknown>> {
     return this.authService.getSettings(user.id);
   }
 
@@ -129,7 +129,7 @@ export class AuthController {
   async updateSettings(
     @CurrentUser() user: UserEntity,
     @Body() dto: UpdateSettingsDto,
-  ): Promise<Record<string, any>> {
+  ): Promise<Record<string, unknown>> {
     return this.authService.updateSettings(user.id, dto);
   }
 
@@ -138,8 +138,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async deleteAccount(
     @CurrentUser() user: UserEntity,
-    @Body() body: { password: string },
+    @Body() dto: DeleteAccountDto,
   ): Promise<{ message: string }> {
-    return this.authService.deleteAccount(user.id, body.password);
+    return this.authService.deleteAccount(user.id, dto.password);
   }
 }

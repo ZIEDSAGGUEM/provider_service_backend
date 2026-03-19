@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { MessagesController } from './messages.controller';
 import { MessagesService } from './messages.service';
@@ -11,9 +11,10 @@ import { GetConversationUseCase } from '../../../core/use-cases/message/get-conv
 import { GetConversationsUseCase } from '../../../core/use-cases/message/get-conversations.usecase';
 import { GetUnreadCountUseCase } from '../../../core/use-cases/message/get-unread-count.usecase';
 import { AuthModule } from '../auth/auth.module';
+import { EventsModule } from '../../gateways/events.module';
 
 @Module({
-  imports: [PassportModule, AuthModule],
+  imports: [PassportModule, AuthModule, forwardRef(() => EventsModule)],
   controllers: [MessagesController],
   providers: [
     MessagesService,

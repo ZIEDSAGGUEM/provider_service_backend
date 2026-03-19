@@ -3,6 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 @Injectable()
 export class EmailService {
   private transporter: Transporter;
@@ -93,7 +102,7 @@ export class EmailService {
             <h1>🎉 Welcome to Service Provider!</h1>
           </div>
           <div class="content">
-            <h2>Hi ${name},</h2>
+            <h2>Hi ${escapeHtml(name)},</h2>
             <p>Thank you for registering! Please verify your email address to activate your account.</p>
             <p>Click the button below to verify your email:</p>
             <a href="${verificationUrl}" class="button">Verify Email Address</a>
@@ -134,7 +143,7 @@ export class EmailService {
             <h1>🔐 Password Reset Request</h1>
           </div>
           <div class="content">
-            <h2>Hi ${name},</h2>
+            <h2>Hi ${escapeHtml(name)},</h2>
             <p>We received a request to reset your password.</p>
             <p>Click the button below to reset your password:</p>
             <a href="${resetUrl}" class="button">Reset Password</a>

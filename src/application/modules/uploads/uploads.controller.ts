@@ -19,6 +19,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole, UserEntity } from '../../../core/entities/user.entity';
 import { UploadsService } from './uploads.service';
+import { RemovePortfolioImageDto } from './dto/remove-portfolio-image.dto';
 
 @Controller('uploads')
 @UseGuards(JwtAuthGuard)
@@ -69,8 +70,8 @@ export class UploadsController {
   @Roles(UserRole.PROVIDER)
   async removePortfolioImage(
     @CurrentUser() user: UserEntity,
-    @Body('imageUrl') imageUrl: string,
+    @Body() dto: RemovePortfolioImageDto,
   ) {
-    return this.uploadsService.removePortfolioImage(user.id, imageUrl);
+    return this.uploadsService.removePortfolioImage(user.id, dto.imageUrl);
   }
 }

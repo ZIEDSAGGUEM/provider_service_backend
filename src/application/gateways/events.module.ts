@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventsGateway } from './events.gateway';
 import { MessagesModule } from '../modules/messages/messages.module';
+import { PrismaService } from '../../infrastructure/database/prisma.service';
 
 @Module({
   imports: [
-    MessagesModule,
+    forwardRef(() => MessagesModule),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -15,7 +16,7 @@ import { MessagesModule } from '../modules/messages/messages.module';
       }),
     }),
   ],
-  providers: [EventsGateway],
+  providers: [EventsGateway, PrismaService],
   exports: [EventsGateway],
 })
 export class EventsModule {}

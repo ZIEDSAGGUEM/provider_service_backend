@@ -6,6 +6,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -30,7 +31,7 @@ export class NotificationsController {
 
   @Put(':id/read')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async markAsRead(@CurrentUser() user: UserEntity, @Param('id') id: string) {
+  async markAsRead(@CurrentUser() user: UserEntity, @Param('id', ParseUUIDPipe) id: string) {
     await this.notificationsService.markAsRead(id, user.id);
   }
 

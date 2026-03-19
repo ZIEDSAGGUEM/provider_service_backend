@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProvidersService } from './providers.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -65,7 +66,7 @@ export class ProvidersController {
   }
 
   @Get(':id')
-  async getProvider(@Param('id') id: string): Promise<ProviderResponseDto> {
+  async getProvider(@Param('id', ParseUUIDPipe) id: string): Promise<ProviderResponseDto> {
     return this.providersService.getProvider(id);
   }
 
@@ -73,7 +74,7 @@ export class ProvidersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.PROVIDER)
   async updateProvider(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: UserEntity,
     @Body() dto: UpdateProviderDto,
   ): Promise<ProviderResponseDto> {
@@ -85,7 +86,7 @@ export class ProvidersController {
   @Roles(UserRole.PROVIDER)
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteProvider(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: UserEntity,
   ): Promise<void> {
     await this.providersService.deleteProvider(id, user.id);

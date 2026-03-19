@@ -66,7 +66,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       name,
-      role: role,
+      role: role as unknown as import('../../../core/entities/user.entity').UserRole,
       verified: false,
       verificationToken,
       verificationTokenExpiry,
@@ -124,12 +124,10 @@ export class AuthService {
   async resendVerificationEmail(email: string): Promise<{ message: string }> {
     const user = await this.userRepository.findByEmail(email);
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (user.verified) {
-      throw new BadRequestException('Email already verified');
+    if (!user || user.verified) {
+      return {
+        message: 'If your email is registered and not yet verified, a verification email has been sent.',
+      };
     }
 
     // Generate new verification token
@@ -231,7 +229,7 @@ export class AuthService {
     let payload: { sub: string };
     try {
       payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_SECRET') + '-refresh',
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET') || this.configService.get<string>('JWT_SECRET') + '-refresh',
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
@@ -493,7 +491,7 @@ export class AuthService {
     };
 
     return this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET') + '-refresh',
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET') || this.configService.get<string>('JWT_SECRET') + '-refresh',
       expiresIn: AuthService.REFRESH_TOKEN_EXPIRY,
     });
   }
