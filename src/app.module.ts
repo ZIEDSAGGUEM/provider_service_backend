@@ -15,6 +15,7 @@ import { EventsModule } from './application/gateways/events.module';
 import { UploadsModule } from './application/modules/uploads/uploads.module';
 import { AdminModule } from './application/modules/admin/admin.module';
 import { DisputesModule } from './application/modules/disputes/disputes.module';
+import { BookingsModule } from './application/modules/bookings/bookings.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { DisputesModule } from './application/modules/disputes/disputes.module';
     UploadsModule,
     AdminModule,
     DisputesModule,
+    BookingsModule,
   ],
   providers: [
     {

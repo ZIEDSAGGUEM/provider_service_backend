@@ -63,6 +63,7 @@ model User {
   notifications Notification[]
   raisedDisputes   Dispute[]      @relation("RaisedDisputes")
   resolvedDisputes Dispute[]      @relation("ResolvedDisputes")
+  bookings         Booking[]      @relation("ClientBookings")
 
   @@index([role])
   @@index([createdAt])
@@ -100,6 +101,8 @@ model Provider {
   requests            ServiceRequest[]
   reviews             Review[]
   favorites           Favorite[]
+  bookings            Booking[]
+  blockedDates        BlockedDate[]
 
   @@index([categoryId])
   @@index([status])
@@ -166,6 +169,7 @@ model ServiceRequest {
   messages    Message[]
   review      Review?
   dispute     Dispute?
+  bookings    Booking[]
 
   @@index([clientId])
   @@index([providerId])
@@ -244,6 +248,16 @@ enum DisputeResolution {
   COMPROMISE
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  RESCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
 enum NotificationType {
   REQUEST_NEW
   REQUEST_ACCEPTED
@@ -256,6 +270,11 @@ enum NotificationType {
   DISPUTE_OPENED
   DISPUTE_RESPONSE
   DISPUTE_RESOLVED
+  BOOKING_CREATED
+  BOOKING_CONFIRMED
+  BOOKING_RESCHEDULED
+  BOOKING_CANCELLED
+  BOOKING_REMINDER
 }
 
 model Notification {
@@ -304,5 +323,62 @@ model Dispute {
   updatedAt         DateTime          @updatedAt
 
   @@map("disputes")
+}
+
+model Booking {
+  id                String        @id @default(uuid())
+
+  clientId          String
+  client            User          @relation("ClientBookings", fields: [clientId], references: [id], onDelete: Cascade)
+
+  providerId        String
+  provider          Provider      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  serviceRequestId  String?
+  serviceRequest    ServiceRequest? @relation(fields: [serviceRequestId], references: [id], onDelete: SetNull)
+
+  // Scheduling details
+  date              DateTime      // The booking date (date only, no time component)
+  startTime         String        // Start time in HH:mm format (e.g., "09:00")
+  endTime           String        // End time in HH:mm format (e.g., "10:00")
+  durationMinutes   Int           // Duration in minutes for quick reference
+
+  // Status tracking
+  status            BookingStatus @default(PENDING)
+  cancelledBy       String?       // "CLIENT" or "PROVIDER"
+  cancelReason      String?
+
+  // Optional metadata
+  notes             String?       // Client notes for the booking
+  providerNotes     String?       // Provider notes after confirmation
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Unique constraint prevents double-booking for same provider/date/time
+  @@unique([providerId, date, startTime])
+  @@index([clientId])
+  @@index([providerId])
+  @@index([date])
+  @@index([status])
+  @@index([createdAt])
+  @@map("bookings")
+}
+
+model BlockedDate {
+  id          String   @id @default(uuid())
+
+  providerId  String
+  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  date        DateTime // The blocked date
+  reason      String?  // Optional reason (e.g., "Holiday", "Personal day")
+
+  createdAt   DateTime @default(now())
+
+  // A provider can only block a date once
+  @@unique([providerId, date])
+  @@index([providerId])
+  @@map("blocked_dates")
 }
 

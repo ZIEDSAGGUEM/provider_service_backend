@@ -9,7 +9,12 @@ export type NotificationType =
   | 'NEW_REVIEW'
   | 'DISPUTE_OPENED'
   | 'DISPUTE_RESPONSE'
-  | 'DISPUTE_RESOLVED';
+  | 'DISPUTE_RESOLVED'
+  | 'BOOKING_CREATED'
+  | 'BOOKING_CONFIRMED'
+  | 'BOOKING_RESCHEDULED'
+  | 'BOOKING_CANCELLED'
+  | 'BOOKING_REMINDER';
 
 export class NotificationEntity {
   id: string;
